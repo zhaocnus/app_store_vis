@@ -1,0 +1,53 @@
+
+
+
+{
+    "resultCount":1,
+    "results": [
+        {
+            "kind":"software",
+            "features":[],
+            "supportedDevices":["iPhone5c", "iPhone-3GS", "iPhone4S", "iPodTouchFourthGen", "iPadFourthGen", "iPodTouchFifthGen", "iPhone4", "iPhone5s", "iPhone6Plus", "iPadFourthGen4G", "iPad3G", "iPadWifi", "iPadMini4G", "iPhone5", "iPad2Wifi", "iPodTouchThirdGen", "iPadMini", "iPhone6", "iPadThirdGen4G", "iPadThirdGen", "iPad23G"],
+            "advisories":["Infrequent/Mild Sexual Content and Nudity"],
+            "isGameCenterEnabled":false,
+            "screenshotUrls":[
+                "http://a1.mzstatic.com/us/r30/Purple/v4/d4/19/77/d41977ea-f210-8ee0-2700-a91fe712421d/screen320x480.jpeg",
+                "http://a1.mzstatic.com/us/r30/Purple/v4/f5/4c/ef/f54ceffd-3c1a-89be-e921-53523a78fc9f/screen320x480.jpeg",
+                "http://a4.mzstatic.com/us/r30/Purple/v4/fa/12/9c/fa129cf4-9bed-16fc-8b1a-efb61bed233b/screen320x480.jpeg",
+                "http://a3.mzstatic.com/us/r30/Purple/v4/d8/ac/b0/d8acb085-b128-9746-6124-4313ac7fafe7/screen320x480.jpeg",
+                "http://a1.mzstatic.com/us/r30/Purple/v4/e5/2c/7d/e52c7d05-23d0-3135-e598-488222b81820/screen320x480.jpeg"],
+            "ipadScreenshotUrls":[],
+            "artworkUrl60":"http://a885.phobos.apple.com/us/r30/Purple/v4/e4/84/f0/e484f0c8-5ebf-a1d2-1699-8593404e9253/57x57-new.png",
+            "artworkUrl512":"http://a571.phobos.apple.com/us/r30/Purple/v4/e0/13/cc/e013cc91-3377-4eb8-0230-e8b845069d02/mzl.cbyczajl.png",
+            "artistViewUrl":"https://itunes.apple.com/us/artist/online-galleries-ltd/id415877113?uo=4",
+            "artistId":415877113,
+            "artistName":"Online Galleries Ltd",
+            "genres":["Lifestyle", "Catalogs"],
+            "price":0.00,
+            "version":"1.10",
+            "description":"www.OnlineGalleries.com is the world's most respected art and antiques community that offers professionals, private collectors and academics a safe environment to search & purchase the highest quality art and antiques\nonline.\n\nObjects range widely from paintings, furniture and jewellery through to collectables and musical instruments. Browsers can be secure in the knowledge that represented dealers are not only experts in their given\nfields but are also members of leading art and antique trade associations worldwide.\n\nWe offer more than 45,000 antiques and works of art from a pool of over 5,000 dealers worldwide.  www.OnlineGalleries.com is the easiest, securest and most enjoyable way of searching for antiques and works of art online.",
+            "currency":"USD",
+            "genreIds":["6012", "6022"],
+            "releaseDate":"2012-06-19T18:57:40Z",
+            "sellerName":"Online Galleries Ltd",
+            "bundleId":"OnlineGalleries",
+            "trackId":535098956,
+            "trackName":"OnlineGalleries.com - Art & Antiques",
+            "primaryGenreName":"Lifestyle",
+            "primaryGenreId":6012,
+             "releaseNotes":"* Now displays correctly on iPad devices\n* No longer crashes when adding items to favourites",
+             "minimumOsVersion":"5.1",
+             "wrapperType":"software",
+             "formattedPrice":"Free",
+             "trackCensoredName":"OnlineGalleries.com - Art & Antiques",
+             "languageCodesISO2A":["EN"],
+             "fileSizeBytes":"2840082",
+             "sellerUrl":"http://www.onlinegalleries.com",
+             "contentAdvisoryRating":"12+",
+             "artworkUrl100":"http://a571.phobos.apple.com/us/r30/Purple/v4/e0/13/cc/e013cc91-3377-4eb8-0230-e8b845069d02/mzl.cbyczajl.png",
+             "trackViewUrl":"https://itunes.apple.com/us/app/onlinegalleries.com-art-antiques/id535098956?mt=8&uo=4",
+             "trackContentRating":"12+"
+        }
+    ]
+}
+
