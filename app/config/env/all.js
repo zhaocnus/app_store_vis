@@ -3,7 +3,7 @@
 module.exports = {
   db: {
     host : 'localhost',
-    database : 'app_store_viz',
+    database : 'app_store_vis',
     user : 'root',
     password : 'root',
     connectionLimit : 10

@@ -18,8 +18,8 @@
     "nodemon": "^1.3.7"
   },
   "scripts": {
-    "start": "nodemon server.js",
-    "scrape": "node data_processing/run-scrape.js"
+    "scrape": "node data_processing/run-scrape.js",
+    "processIcons": "node data_processing/process-icons.js"
   },
   "author": "Young Zhao",
   "license": "ISC"

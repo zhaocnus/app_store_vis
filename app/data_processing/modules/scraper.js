@@ -68,25 +68,6 @@ function getGenreLevel(html) {
 }
 
 function getLetterLevel(urls) {
-	var all = [];
-
-  // loop through all genres
-  urls.forEach(function (url) {
-    // A-Z
-    for (var i = 68; i <= 70; i++) {
-    	var letterUrl = url + '&letter=' + String.fromCharCode(i);
-    	all.push({
-    		base: letterUrl,
-    		page: 1
-    	});
-    }
-  });
-
-  return all;
-}
-
-/*
-function getLetterLevel(urls) {
   var all = [];
 
   // loop through all genres
@@ -109,7 +90,6 @@ function getLetterLevel(urls) {
 
   return all;
 }
-*/
 
 // url example:
 // https://itunes.apple.com/us/genre/ios-books/id6018?mt=8&letter=A&page=2#page

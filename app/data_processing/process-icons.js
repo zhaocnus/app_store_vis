@@ -6,110 +6,88 @@
  **/
 
 // module dependencies
+var util = require('util');
 var async = require('async');
 var bluebird = require('bluebird');
-var conn = require('../app/models/connection');
-var imageProcessor = require('./modules/image-processor');
+var conn = require('./database/connection');
+var im = require('./modules/im');
+var pconsole = require('./modules/p-console');
 
 // constants
 var ROWS_PER_QUERY = 100;
+var DELAY = 3000;
 
 /**
  * Gets number of rows in apps_simple table
  **/
-function getNumRows() {
-  return new bluebird(function (resolve, reject) {
-    var query = 'SELECT COUNT(*) AS count FROM apps_simple';
-    conn.query(query)
-      .then(function (result) {
-        resolve(result[0].count);
-      }, function (err) {
-        reject(err);
-      });
-  });
+function getNumRows(cb) {
+  var query = 'SELECT COUNT(*) AS count FROM apps';
+  conn.query(query)
+    .then(function (result) {
+      cb(null, result[0].count);
+    }, function (err) {
+      cb(err);
+    });
 }
 
 /**
  * Process rows by LIMIT and OFFSET
  **/
-function processRows(offset, callback) {
-  var query = 'SELECT id, artwork_url60' +
-    ' FROM apps_simple' +
-    ' LIMIT ' + ROWS_PER_QUERY +
-    ' OFFSET ' + offset;
+function processRows(offset, cb) {
+  var query = util.format(
+    'SELECT track_id AS id, ' +
+    'artwork_url60 AS url ' +
+    'FROM apps ' +
+    'LIMIT %d OFFSET %d',
+    ROWS_PER_QUERY, offset);
 
   conn.query(query)
     .then(function (rows) {
-      var rowStart = offset + 1,
-        rowEnd = offset + ROWS_PER_QUERY;
-      process.stdout.write('\rProcessing row ' + rowStart + ' - ' + rowEnd);
+      var rowStart = offset + 1;
+      var rowEnd = offset + ROWS_PER_QUERY;
+      pconsole.inline('Processing row ' + rowStart + ' - ' + rowEnd, true);
 
-      return imageProcessor.process(rows);
+      return im.bulkProcess(rows);
     })
     .then(function () {
-      process.stdout.write(' | Complete');
-      callback();
+      setTimeout(function () {
+        cb()
+      }, DELAY);
     }, function (err) {
-      callback(err);
+      cb(err);
     });
 }
 
 /**
  * Process all rows
  **/
-function processAll(numRows) {
-  return new bluebird(function (resolve, reject) {
+function processAll(numRows, cb) {
     var offsets = [];
 
-    for (var offset = 0; offset < numRows; offset++) {
+    for (var offset = 0; offset < numRows; offset+=ROWS_PER_QUERY) {
       offsets.push(offset);
     }
 
     async.eachSeries(offsets, processRows, function (err) {
       if (err) {
-        reject(err);
-        return;
+        return cb(err);
       }
 
       resolve();
     });
-  });
 }
 
 /**
  * main function
  **/
 function init() {
-  getNumRows()
-  .then(function (numRows) {
-    console.log('Number of rows : ' + numRows);
-    return processAll(numRows);
-  })
-  .then(function () {
-    console.log('All done!');
-  }, function (err) {
-    console.log(err);
-  })
-  .catch(function (err) {
+  async.waterfall([
+    getNumRows,
+    processAll
+  ], function (err) {
     throw err;
   });
 }
 
 // run process
-//init();
-
-var requestAsync = require('./modules/request-async');
-var url = 'http://is3.mzstatic.com/image/pf/us/r30/Purple3/v4/c2/fb/bc/c2fbbc9e-7470-7048-d7be-24ce6cdf82cf/AppIcon60x60_U00402x.png';
-requestAsync(url)
-  .then(function (result) {
-    console.log(result);
-  }, function (err) {
-    console.log(err);
-  });
-
-
-
-
-
-
-
+init();
