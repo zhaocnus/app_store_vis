@@ -10,7 +10,8 @@ var util = require('util');
 var async = require('async');
 var bluebird = require('bluebird');
 var conn = require('./database/connection');
-var im = require('./modules/im');
+var imgDownloader = require('./modules/img-downloader');
+var imgAnalyzer = require('./modules/img-analyzer');
 var pconsole = require('./modules/p-console');
 
 // constants
@@ -45,9 +46,13 @@ function processRows(offset, cb) {
     .then(function (rows) {
       var rowStart = offset + 1;
       var rowEnd = offset + ROWS_PER_QUERY;
-      pconsole.log('Processing row ' + rowStart + ' - ' + rowEnd, true);
+      pconsole.log('Downloading row ' + rowStart + ' - ' + rowEnd, true);
 
-      return im.bulkProcess(rows);
+      return imgDownloader.bulkDownload(rows);
+    })
+    .then(function (images) {
+      pconsole.log('Analyzing images', true);
+      return imgAnalyzer.bulkAnalyze(images);
     })
     .then(function () {
       setTimeout(function () {

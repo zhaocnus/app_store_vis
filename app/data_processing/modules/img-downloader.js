@@ -14,7 +14,7 @@ var streamifier = require('streamifier');
 var pconsole = require('./p-console');
 
 // Constants
-var ICON_BASE = './tmp/icons'; // base dir to save icons
+var ICON_BASE = require('../../config/config').icon.tmpPath; // base dir to save icons
 
 /**
  * Processes stream using imagemagick
@@ -61,7 +61,7 @@ function createThumbnail(streamIn) {
  * (http://stackoverflow.com/a/14145853/2259286)
  * @param {object} img {url: string, id: number}
  */
-function processImg(img, callback) {
+function download(img, callback) {
   request(img.url, {encoding: null}, function(err, res, body) {
     if (err || res.statusCode !== 200) {
       pconsole.error('Error requesting image. id: ' + img.id);
@@ -73,7 +73,7 @@ function processImg(img, callback) {
         filename = img.id + '.' + contentType.replace('image/', ''),
         filepath = path.join(ICON_BASE, filename);
 
-        // convert body(buffer) to stream
+    // convert body(buffer) to stream
     var streamIn = streamifier.createReadStream(body);
 
     createThumbnail(streamIn)
@@ -83,7 +83,10 @@ function processImg(img, callback) {
       })
       .pipe(fs.createWriteStream(filepath))
       .on('finish', function () {
-        callback();
+        callback(null, {
+          id: img.id,
+          filename: filename
+        });
       })
       .on('error', function (err) {
         pconsole.error('Error saving image. id: ' + img.id);
@@ -92,14 +95,19 @@ function processImg(img, callback) {
   });
 }
 
-module.exports.bulkProcess = function (images) {
+/**
+ * bulk process images array
+ * @param {array} images array of images
+ * @return {Promise}
+ */
+module.exports.bulkDownload = function (images) {
   return new bluebird(function (resolve) {
-    async.map(images, processImg, function (err) {
+    async.map(images, download, function (err, results) {
       if (err) {
         throw err;
       }
 
-      resolve();
+      resolve(results);
     });
   });
 };
