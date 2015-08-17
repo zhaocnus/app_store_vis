@@ -1,6 +1,6 @@
 'use strict';
 
-
+// Module dependencies
 var spawn = require('child_process').spawn;
 var Stream = require('stream');
 var fs = require('fs');
@@ -10,10 +10,16 @@ var path = require('path');
 var async = require('async');
 var bluebird = require('bluebird');
 var request = require('request');
+var streamifier = require('streamifier');
+var pconsole = require('./p-console');
 
-// (https://gist.github.com/arian/3266825)
+// Constants
+var ICON_BASE = './tmp/icons'; // base dir to save icons
+
 /**
  * Processes stream using imagemagick
+ * REF:
+ * (https://gist.github.com/arian/3266825)
  * @param {Stream} streamIn in stream containing the raw image
  * @param {array} args augments for convert command
  * @return {Stream}
@@ -34,14 +40,14 @@ function processStream(streamIn, args) {
 }
 
 /**
- * Creates image thumbnail
+ * Creates image thumbnail using imagemagick
  * @param {Stream} streamIn in stream containing the raw image
  * @return {Stream}
  */
 function createThumbnail(streamIn) {
   var args = [
     '-',                        // use stdin
-    '-thumbnail', '16x16\!',    // create thumbnail
+    '-thumbnail', '32x32\!',    // create thumbnail
     '-'                         // output to stdout
   ];
 
@@ -49,34 +55,46 @@ function createThumbnail(streamIn) {
 }
 
 /**
- * Processes single image
- * @param {object} image {url: string, id: number}
+ * process remote image
+ * REF:
+ * (http://stackoverflow.com/a/12751657/2259286)
+ * (http://stackoverflow.com/a/14145853/2259286)
+ * @param {object} img {url: string, id: number}
  */
-function processImage(image, cb) {
-  console.log(image.url);
-  var streamIn = request
-    .get(image.url)
-    .on('error', function(err) {
-      pconsole.error(image.url);
-      throw err;
-    });
+function processImg(img, callback) {
+  request(img.url, {encoding: null}, function(err, res, body) {
+    if (err || res.statusCode !== 200) {
+      pconsole.error('Error requesting image. id: ' + img.id);
+      return callback(); // proceed to next image
+    }
 
-  var filename = './tmp/icons/' + image.id + path.extname(image.url);
-  var stream = createThumbnail(streamIn)
-    .pipe(fs.createWriteStream(filename));
+    // prepare path name
+    var contentType = res.headers['content-type'],
+        filename = img.id + '.' + contentType.replace('image/', ''),
+        filepath = path.join(ICON_BASE, filename);
 
-  stream
-    .on('finish', function () {
-      cb();
-    })
-    .on('error', function (err) {
-      throw err;
-    });
+        // convert body(buffer) to stream
+    var streamIn = streamifier.createReadStream(body);
+
+    createThumbnail(streamIn)
+      .on('error', function (err) {
+        pconsole.error('Error processing image. id: ' + img.id);
+        return callback(); // proceed to next image
+      })
+      .pipe(fs.createWriteStream(filepath))
+      .on('finish', function () {
+        callback();
+      })
+      .on('error', function (err) {
+        pconsole.error('Error saving image. id: ' + img.id);
+        return callback(); // proceed to next image
+      });
+  });
 }
 
-module.exports.bulkProcess = function (images, cb) {
+module.exports.bulkProcess = function (images) {
   return new bluebird(function (resolve) {
-    async.map(images, processImage, function (err) {
+    async.map(images, processImg, function (err) {
       if (err) {
         throw err;
       }

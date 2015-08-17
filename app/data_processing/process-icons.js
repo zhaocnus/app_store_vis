@@ -45,7 +45,7 @@ function processRows(offset, cb) {
     .then(function (rows) {
       var rowStart = offset + 1;
       var rowEnd = offset + ROWS_PER_QUERY;
-      pconsole.inline('Processing row ' + rowStart + ' - ' + rowEnd, true);
+      pconsole.log('Processing row ' + rowStart + ' - ' + rowEnd, true);
 
       return im.bulkProcess(rows);
     })
