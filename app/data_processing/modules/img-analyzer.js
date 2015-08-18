@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Module to analyze image rgb value
+ */
+
 // Module dependencies
 var exec = require('child_process').exec;
 var fs = require('fs');
@@ -16,7 +20,9 @@ var REGEX_HEX = /#[A-Fa-f0-9]{6}/;
 
 /**
  * gets image rgb and grayscale values
- * REF (http://stackoverflow.com/a/17619494/2259286)
+ * REF
+ * (http://stackoverflow.com/a/17619494/2259286)
+ * (http://www.tannerhelland.com/3643/grayscale-image-algorithm-vb6/)
  * example of infoStr:
  * # ImageMagick pixel enumeration: 1,1,255,srgba
  * 0,0: (125,67,64,1)  #7D4340  srgba(125,67,64,1)
@@ -31,11 +37,16 @@ function analyzeColor(infoStr) {
 
   var rgb = rgbStr[0].replace('(', '').split(','),
       hex = hexStr[0].replace('#', '');
-  console.log(rgb, hex);
+
+  // calculate grayscale
+  var r = parseInt(rgb[0], 10),
+      g = parseInt(rgb[1], 10),
+      b = parseInt(rgb[2], 10),
+      grayscale = 0.2126 * r + 0.7152 * g + 0.0722 * b;
 
   return {
     hex: hex,
-    grayscale: 255
+    grayscale: grayscale
   };
 }
 
@@ -45,7 +56,7 @@ function analyzeColor(infoStr) {
 function analyze(img, callback) {
   // img could be undefined if the image url is not valid
   if (!img) {
-    callback();
+    return callback();
   }
 
   var filepath =  path.join(ICON_BASE, img.filename),
@@ -61,6 +72,7 @@ function analyze(img, callback) {
     var color = analyzeColor(stdout);
     callback(null, {
       id: img.id,
+      filename: img.filename,
       hex: color.hex,
       grayscale: color.grayscale
     });

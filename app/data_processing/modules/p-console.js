@@ -42,6 +42,6 @@ module.exports.log = function (msg) {
 }
 
 module.exports.error = function (msg) {
-  colog.error(msg);
+  colog.error('    ' + msg);
 }
 

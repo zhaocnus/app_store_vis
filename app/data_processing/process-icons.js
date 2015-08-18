@@ -12,6 +12,7 @@ var bluebird = require('bluebird');
 var conn = require('./database/connection');
 var imgDownloader = require('./modules/img-downloader');
 var imgAnalyzer = require('./modules/img-analyzer');
+var imgSave = require('./modules/img-save');
 var pconsole = require('./modules/p-console');
 
 // constants
@@ -46,13 +47,17 @@ function processRows(offset, cb) {
     .then(function (rows) {
       var rowStart = offset + 1;
       var rowEnd = offset + ROWS_PER_QUERY;
-      pconsole.log('Downloading row ' + rowStart + ' - ' + rowEnd, true);
 
+      pconsole.log('Downloading row ' + rowStart + ' - ' + rowEnd, true);
       return imgDownloader.bulkDownload(rows);
     })
     .then(function (images) {
       pconsole.log('Analyzing images', true);
       return imgAnalyzer.bulkAnalyze(images);
+    })
+    .then(function (images) {
+      pconsole.log('Saving image info', true);
+      return imgSave.bulkSave(images);
     })
     .then(function () {
       setTimeout(function () {
