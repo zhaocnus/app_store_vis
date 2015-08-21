@@ -19,9 +19,9 @@ function prepareQueries(images) {
     }
 
     var query = util.format(
-      'UPDATE `apps` ' +
-      'SET `grayscale` = %d, `hex` = \'%s\', `filename` = \'%s\' ' +
-      'WHERE `track_id` = %d' ,
+      "UPDATE `apps` " +
+      "SET `grayscale` = %d, `hex` = '%s', `filename` = '%s' " +
+      "WHERE `track_id` = %d" ,
       img.grayscale, img.hex, img.filename, img.id);
 
     queries.push(query);

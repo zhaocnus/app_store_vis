@@ -36,10 +36,13 @@ function getNumRows(cb) {
  * Process rows by LIMIT and OFFSET
  **/
 function processRows(offset, cb) {
+  // NOT NULL filename means this
+  // row has already been processed
   var query = util.format(
     'SELECT track_id AS id, ' +
-    'artwork_url60 AS url ' +
+      'artwork_url60 AS url ' +
     'FROM apps ' +
+    'WHERE filename IS NULL ' +
     'LIMIT %d OFFSET %d',
     ROWS_PER_QUERY, offset);
 
@@ -48,6 +51,7 @@ function processRows(offset, cb) {
       var rowStart = offset + 1;
       var rowEnd = offset + ROWS_PER_QUERY;
 
+      pconsole.dividor();
       pconsole.log('Downloading row ' + rowStart + ' - ' + rowEnd, true);
       return imgDownloader.bulkDownload(rows);
     })

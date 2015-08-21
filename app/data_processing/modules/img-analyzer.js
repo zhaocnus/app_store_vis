@@ -42,7 +42,7 @@ function analyzeColor(infoStr) {
   var r = parseInt(rgb[0], 10),
       g = parseInt(rgb[1], 10),
       b = parseInt(rgb[2], 10),
-      grayscale = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      grayscale = Math.round(0.2126 * r + 0.7152 * g + 0.0722 * b);
 
   return {
     hex: hex,
