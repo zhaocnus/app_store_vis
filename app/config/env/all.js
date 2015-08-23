@@ -9,6 +9,7 @@ module.exports = {
     connectionLimit : 10
   },
   icon: {
-    tmpPath: './tmp/icons'
+    tmpPath: './tmp/icons',
+    distPath: './public/icons'
   }
 };
