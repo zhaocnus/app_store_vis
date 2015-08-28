@@ -88,6 +88,6 @@ function execTransaction(queries) {
 
 module.exports = {
   query: query,
-  pool: pool,
+  escape: mysql.escape,
   execTransaction: execTransaction
 };

@@ -31,6 +31,10 @@ var ICON_DIST = config.icon.distPath; // base dir to save icons
 var grayscaleArr = [];
 var MAX_Y = 10; // maximum number of images in y-axis
 
+// constants
+var TMP_LIMIT =
+var ROWS_PER_QUERY = 100;
+
 
 function initArr() {
   for (var i = 0; i < 256; i++) {
@@ -158,6 +162,10 @@ function processAllRows(rows, cb) {
 
     cb();
   });
+}
+
+function getNumRows() {
+
 }
 
 /**

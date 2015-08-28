@@ -19,8 +19,9 @@
     "streamifier": "^0.1.1"
   },
   "scripts": {
-    "scrape": "node data_processing/run-scrape.js",
-    "processIcons": "node data_processing/process-icons.js"
+    "scrape": "node data_processing/main-scrape.js",
+    "processIcons": "node data_processing/main-process-icons.js",
+    "createSprites": "node data_processing/main-create-sprites.js"
   },
   "author": "Young Zhao",
   "license": "ISC"
