@@ -14,8 +14,10 @@ var pconsole = require('./modules/p-console');
 function init() {
   async.waterfall([
 
+    // get all genre urls
     scraper.getAllGenreUrls,
 
+    // For simplicity, filter urls and use only ios games genre
     function (urls, cb) {
       // scrape only ios games
       var regex = /(\/ios-games\/)/,
@@ -24,6 +26,7 @@ function init() {
       cb(null, filteredUrls);
     },
 
+    // scrape ios games genre
     function (filteredUrls, cb) {
       var progressCallback = function (appIds) {
         return itunesApi.processApps(appIds);
