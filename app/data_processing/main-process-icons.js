@@ -55,17 +55,18 @@ function processRows(offset, cb) {
 function processAll(numRows, cb) {
   var offsets = [];
 
-  // 161601
-  for (var offset = 0; offset < numRows; offset += ROWS_PER_QUERY) {
+  console.log(numRows);
+
+  for (var offset = 323200; offset < numRows; offset += ROWS_PER_QUERY) {
     offsets.push(offset);
   }
 
   async.eachSeries(offsets, processRows, function (err) {
     if (err) {
-      return cb(err);
+      throw err;
     }
 
-    resolve();
+    cb();
   });
 }
 
@@ -77,7 +78,13 @@ function init() {
     appsController.getNumRows,
     processAll
   ], function (err) {
-    throw err;
+    if (err) {
+      throw err;
+    }
+
+    pconsole.dividor();
+    pconsole.header('All icons are processed.');
+    process.exit(0);
   });
 }
 

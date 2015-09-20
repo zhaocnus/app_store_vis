@@ -1,11 +1,10 @@
 'use strict';
-
     // ------------------------------------------------------
-    // Downloading row 160901 - 161000
+    // Downloading row 223701 - 223800
     // Analyzing images
     // Saving image info
     // ------------------------------------------------------
-    // Downloading row 161001 - 161100
+    // Downloading row 223801 - 223900
 
 
 /**
@@ -24,6 +23,8 @@ var pconsole = require('./p-console');
 var conn = require('../database/connection');
 var config = require('../../config/config');
 
+var appsController = require('../controllers/apps.controller');
+
 // Constants
 var ICON_SRC = config.icon.tmpPath; // tmp dir to save icons
 var ICON_DIST = config.icon.distPath; // base dir to save icons
@@ -32,8 +33,7 @@ var grayscaleArr = [];
 var MAX_Y = 10; // maximum number of images in y-axis
 
 // constants
-var TMP_LIMIT =
-var ROWS_PER_QUERY = 100;
+var ROWS_PER_QUERY = 256;
 
 
 function initArr() {
@@ -136,37 +136,38 @@ function processSingleRow(row, cb) {
     });
   }
 }
+/**
+ * Process rows by LIMIT and OFFSET
+ **/
+function processRows(offset, cb) {
 
-function getRows(cb) {
-  var limit = 2000;
-  var query = util.format(
-    'SELECT * ' +
-    'FROM apps ' +
-    'WHERE grayscale IS NOT NULL ' +
-    'LIMIT %d',
-    limit);
 
-  conn.query(query)
-    .then(function (rows) {
-      cb(null, rows);
-    }, function (err) {
-      if (err) throw err;
-    });
+
 }
 
-function processAllRows(rows, cb) {
-  async.mapSeries(rows, processSingleRow, function (err) {
+/**
+ * Process all rows
+ **/
+function processAll(numRows, cb) {
+  var offsets = [];
+
+  // debug
+  numRows = 160000;
+
+  // 161601
+  for (var offset = 0; offset < numRows; offset += ROWS_PER_QUERY) {
+    offsets.push(offset);
+  }
+
+  async.eachSeries(offsets, processRows, function (err) {
     if (err) {
-      throw err;
+      return cb(err);
     }
 
-    cb();
+    resolve();
   });
 }
 
-function getNumRows() {
-
-}
 
 /**
  * bulk process images array
@@ -177,8 +178,8 @@ module.exports.run = function () {
   initArr();
 
   async.waterfall([
-    getRows,
-    processAllRows
+    appsController.getNumRows,
+    processAll
   ], function (err) {
     if (err) {
       throw err;

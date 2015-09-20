@@ -88,7 +88,22 @@ module.exports.getUnProcessedRows = function(limit, offset) {
     'SELECT track_id AS id, ' +
       'artwork_url60 AS url ' +
     'FROM apps ' +
-    'WHERE filename IS NULL ' +
+    //'WHERE filename IS NULL ' +
+    'LIMIT %d OFFSET %d',
+    limit, offset);
+
+  console.log(query);
+
+  return conn.query(query);
+};
+
+/**
+ * Gets rows by offset and limit
+ */
+module.exports.getRowsInRange = function(limit, offset) {
+  var query = util.format(
+    'SELECT * ' +
+    'FROM apps ' +
     'LIMIT %d OFFSET %d',
     limit, offset);
 
