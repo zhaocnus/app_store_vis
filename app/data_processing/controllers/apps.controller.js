@@ -100,10 +100,12 @@ module.exports.getUnProcessedRows = function(limit, offset) {
 /**
  * Gets rows by offset and limit
  */
-module.exports.getRowsInRange = function(limit, offset) {
+module.exports.getProcessedRowsInRange = function(limit, offset) {
   var query = util.format(
     'SELECT * ' +
     'FROM apps ' +
+    'WHERE `filename` IS NOT NULL ' +
+    'AND `grayscale` IS NOT NULL ' +
     'LIMIT %d OFFSET %d',
     limit, offset);
 

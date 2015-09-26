@@ -11,20 +11,26 @@
 
 // Module dependencies
 var async = require('async');
-var pconsole = require('./p-console');
+var pconsole = require('./modules/p-console');
+var spriteCreator = require('./modules/sprite-creator');
 var appsController = require('./controllers/apps.controller');
 
 // constants
-var ROWS_PER_QUERY = 256;
+var ROWS_PER_QUERY = 1024;
 
 /**
  * Process rows by LIMIT and OFFSET
  **/
 function processRows(offset, cb) {
   appsController
-    .getRowsInRange(ROWS_PER_QUERY, offset)
+    .getProcessedRowsInRange(ROWS_PER_QUERY, offset)
     .then(function (rows) {
-
+      return spriteCreator.addIcons(rows);
+    })
+    .then(function () {
+      cb();
+    }, function (err) {
+      throw err;
     });
 }
 
@@ -35,7 +41,7 @@ function processAll(numRows, cb) {
   var offsets = [];
 
   // debug: process only first 16000 rows
-  numRows = 160000;
+  //numRows = 160000;
 
   for (var offset = 0; offset < numRows; offset += ROWS_PER_QUERY) {
     offsets.push(offset);
@@ -43,10 +49,10 @@ function processAll(numRows, cb) {
 
   async.eachSeries(offsets, processRows, function (err) {
     if (err) {
-      return cb(err);
+      throw err;
     }
 
-    resolve();
+    cb();
   });
 }
 

@@ -1,190 +1,104 @@
-'use strict';
-    // ------------------------------------------------------
-    // Downloading row 223701 - 223800
-    // Analyzing images
-    // Saving image info
-    // ------------------------------------------------------
-    // Downloading row 223801 - 223900
-
-
 /**
- * Module to create sprite image using icons' grasyscale value
+ * Module to create spritemap using icons' grayscale value
+ * REF
+ * [Combine multiple images using ImageMagick](http://superuser.com/a/290679)
  */
 
-// REF
-// Combine multiple images using ImageMagick : (http://superuser.com/a/290679)
+'use strict';
 
 // Module dependencies
-var exec = require('child_process').exec;
-var path = require('path');
-var util = require('util');
 var async = require('async');
+var bluebird = require('bluebird');
 var pconsole = require('./p-console');
-var conn = require('../database/connection');
 var config = require('../../config/config');
-
 var appsController = require('../controllers/apps.controller');
+var spritesController = require('../controllers/sprites.controller');
 
 // Constants
-var ICON_SRC = config.icon.tmpPath; // tmp dir to save icons
-var ICON_DIST = config.icon.distPath; // base dir to save icons
+var MAX_X = config.icon.spriteTileX - 1; // maximum number of images in x-axis
+var MAX_Y = config.icon.spriteTileY - 1; // maximum number of images in y-axis
 
-var grayscaleArr = [];
-var MAX_Y = 10; // maximum number of images in y-axis
+// sprite array, index is grayscale
+var spriteArr = initArr();
 
-// constants
-var ROWS_PER_QUERY = 256;
-
-
+/**
+ * init grayscaleArr
+ */
 function initArr() {
+  var arr = [];
   for (var i = 0; i < 256; i++) {
-    grayscaleArr.push({
-      files: '',
-      count: 0,
-      overallIndex: 0,
-      queries: []
+    arr.push({
+      x: 0, // x index
+      y: 0, // y index
+      icons: [] // icons array
     });
   }
+
+  return arr;
 }
 
-// add zeros in front of numbers
-// limited to 3 digits
-// Use recursive function to support more digits
-// REF: (http://stackoverflow.com/a/6466243/2259286)
-function pad(num) {
-  if (num < 10) {
-    return '00' + num;
-  } else if (num < 100) {
-    return '0' + num;
-  } else {
-    return num.toString();
+function addIcon(row, cb) {
+  var id = row.track_id,
+      grayscale = row.grayscale,
+      filename = row.filename;
+
+  if (grayscale === null || !filename) {
+    console.log('Icon not valid. track_id: ' + id);
+    return cb();
   }
-}
 
-// create spritemap
-// Example command:
-// montage -mode concatenate -tile 1x 281656475.png 281736535.png 281747159.png out.png
-function createSprite(input, output, cb) {
-  var command = 'montage -mode concatenate -tile 1x ' +
-      input + ' ' + output;
+  var sprite = spriteArr[grayscale];
 
-  exec(command, function (err) {
-    if (err) {
-      throw err;
-    }
-
-    cb();
+  // add icon to sprite
+  sprite.icons.push({
+    iconId: id,
+    filename: filename,
+    x: sprite.x,
+    y: sprite.y
   });
-}
 
-// update icon info to database
-function updateDatabase(queries, cb) {
-  conn.execTransaction(queries)
-    .then(function() {
-      console.log(queries.length);
-      cb();
-    }, function(err) {
-      console.log(queries.length);
-      throw err;
-    });
-}
+  // update sprite for next icon
+  var isSync = true;
+  if (sprite.x >= MAX_X && sprite.y >= MAX_Y) {
+    // reach max x and max y, save current sprite
+    spritesController.addNewSprite(sprite.icons, grayscale)
+      .then(function () {
+        cb();
+      }, function (err) {
+        throw err;
+      });
 
-function processSingleRow(row, cb) {
-  var filename = row.filename,
-      trackId = row.track_id,
-      grayscale = row.grayscale;
+    // start from a new sprite
+    sprite.x = 0;
+    sprite.y = 0;
+    sprite.icons = [];
 
-  var arrItem = grayscaleArr[grayscale],
-      spriteName = pad(grayscale) + '-' + arrItem.overallIndex + '.jpg',
-      query = util.format(
-        'UPDATE apps ' +
-        'SET sprite_name = \'%s\', index_in_sprite = %d ' +
-        'WHERE track_id = %d',
-        spriteName, arrItem.count, trackId);
-
-  arrItem.queries.push(query);
-  arrItem.files += path.join(ICON_SRC, filename) + ' ';
-
-  if (arrItem.count < MAX_Y - 1) {
-    // continue new icon in same sprite
-    arrItem.count ++;
-    cb();
+    isSync = false;
+  } else if (sprite.x >= MAX_X) {
+    // reach max x, start a new row
+    sprite.x = 0;
+    sprite.y += 1;
   } else {
-    // reach MAX_Y, save sprite
-    async.series([
-      function (callback) {
-        var spritePath = path.join(ICON_DIST, spriteName);
-        createSprite(arrItem.files, spritePath, callback);
-      },
-      function (callback) {
-        updateDatabase(arrItem.queries, callback);
-      }
-    ], function (err) {
-      console.log('Done');
+    sprite.x += 1;
+  }
+
+  if (isSync) {
+    cb();
+  }
+}
+
+/**
+ * Adds new icons to spritemap
+ * iconRows: rows of apps table
+ */
+module.exports.addIcons = function(rows) {
+  return new bluebird(function (resolve) {
+    async.eachSeries(rows, addIcon, function (err) {
       if (err) {
         throw err;
       }
 
-      pconsole.log('Saved sprite : ' + spriteName);
-
-      // new sprite
-      arrItem.count = 0;
-      arrItem.queries = [];
-      arrItem.files = '';
-      arrItem.overallIndex ++;
-      cb();
+      resolve();
     });
-  }
-}
-/**
- * Process rows by LIMIT and OFFSET
- **/
-function processRows(offset, cb) {
-
-
-
-}
-
-/**
- * Process all rows
- **/
-function processAll(numRows, cb) {
-  var offsets = [];
-
-  // debug
-  numRows = 160000;
-
-  // 161601
-  for (var offset = 0; offset < numRows; offset += ROWS_PER_QUERY) {
-    offsets.push(offset);
-  }
-
-  async.eachSeries(offsets, processRows, function (err) {
-    if (err) {
-      return cb(err);
-    }
-
-    resolve();
-  });
-}
-
-
-/**
- * bulk process images array
- * @param {array} images array of images. {id: number, filename: string}
- * @return {Promise}
- */
-module.exports.run = function () {
-  initArr();
-
-  async.waterfall([
-    appsController.getNumRows,
-    processAll
-  ], function (err) {
-    if (err) {
-      throw err;
-    }
-
-    pconsole.log('All Done.');
   });
 };

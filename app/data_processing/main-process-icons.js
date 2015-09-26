@@ -57,7 +57,7 @@ function processAll(numRows, cb) {
 
   console.log(numRows);
 
-  for (var offset = 323200; offset < numRows; offset += ROWS_PER_QUERY) {
+  for (var offset = 0; offset < numRows; offset += ROWS_PER_QUERY) {
     offsets.push(offset);
   }
 

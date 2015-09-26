@@ -10,6 +10,8 @@ module.exports = {
   },
   icon: {
     tmpPath: './tmp/icons',
-    distPath: './public/icons'
+    distPath: './public/icons',
+    spriteTileX: 40,
+    spriteTileY: 40
   }
 };
