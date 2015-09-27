@@ -63,8 +63,13 @@ function createThumbnail(streamIn) {
  */
 function download(img, callback) {
   request(img.url, {encoding: null}, function(err, res, body) {
-    if (err || res.statusCode !== 200) {
+    if (err) {
       pconsole.error('Error requesting image. id: ' + img.id);
+      return callback(); // proceed to next image
+    }
+
+    if (res.statusCode !== 200) {
+      pconsole.error('Error requesting image. id: ' + img.id + ' | Error code: ' + res.statusCode);
       return callback(); // proceed to next image
     }
 

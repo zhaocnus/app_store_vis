@@ -7,93 +7,43 @@
 'use strict';
 
 // Module dependencies
+var util = require('util');
+var exec = require('child_process').exec;
 var async = require('async');
 var bluebird = require('bluebird');
 var pconsole = require('./p-console');
+var uuid = require('node-uuid');
 var config = require('../../config/config');
 var appsController = require('../controllers/apps.controller');
 var spritesController = require('../controllers/sprites.controller');
 
 // Constants
-var MAX_X = config.icon.spriteTileX - 1; // maximum number of images in x-axis
-var MAX_Y = config.icon.spriteTileY - 1; // maximum number of images in y-axis
+var TILE_X = config.icon.spriteTileX;
+var TILE_STR = TILE_X + 'x' + config.icon.spriteTileY;
 
-// sprite array, index is grayscale
-var spriteArr = initArr();
 
-/**
- * init grayscaleArr
- */
-function initArr() {
-  var arr = [];
-  for (var i = 0; i < 256; i++) {
-    arr.push({
-      x: 0, // x index
-      y: 0, // y index
-      icons: [] // icons array
-    });
-  }
-
-  return arr;
-}
-
-function addIcon(row, cb) {
-  var id = row.track_id,
-      grayscale = row.grayscale,
-      filename = row.filename;
-
-  if (grayscale === null || !filename) {
-    console.log('Icon not valid. track_id: ' + id);
-    return cb();
-  }
-
-  var sprite = spriteArr[grayscale];
-
-  // add icon to sprite
-  sprite.icons.push({
-    iconId: id,
-    filename: filename,
-    x: sprite.x,
-    y: sprite.y
-  });
-
-  // update sprite for next icon
-  var isSync = true;
-  if (sprite.x >= MAX_X && sprite.y >= MAX_Y) {
-    // reach max x and max y, save current sprite
-    spritesController.addNewSprite(sprite.icons, grayscale)
-      .then(function () {
-        cb();
-      }, function (err) {
-        throw err;
-      });
-
-    // start from a new sprite
-    sprite.x = 0;
-    sprite.y = 0;
-    sprite.icons = [];
-
-    isSync = false;
-  } else if (sprite.x >= MAX_X) {
-    // reach max x, start a new row
-    sprite.x = 0;
-    sprite.y += 1;
-  } else {
-    sprite.x += 1;
-  }
-
-  if (isSync) {
-    cb();
-  }
-}
-
-/**
- * Adds new icons to spritemap
- * iconRows: rows of apps table
- */
-module.exports.addIcons = function(rows) {
+// create spritemap
+// Example command:
+// montage -mode concatenate -tile 2x2 1.png 2.png 3.png 4.png out.png
+// IMPORTANT: the order is x first then y, so out.png will be
+// 1 | 2
+// 3 | 4
+function saveSpriteFile(icons, spriteFilename) {
   return new bluebird(function (resolve) {
-    async.eachSeries(rows, addIcon, function (err) {
+    var input = '';
+
+    // save all inputs as a single string
+    icons.forEach(function (icon) {
+      input += ' ' + config.icon.tmpPath + '/' + icon.filename;
+    });
+
+    var command = util.format(
+      'montage -mode concatenate -tile %s %s %s',
+      TILE_STR, input,
+      config.icon.distPath + '/' + spriteFilename
+    );
+
+    exec(command, function (err) {
       if (err) {
         throw err;
       }
@@ -101,4 +51,25 @@ module.exports.addIcons = function(rows) {
       resolve();
     });
   });
+}
+
+/**
+ * Create sprite from icons
+ */
+module.exports.createSpriteFromIcons = function(icons) {
+  // get icons x,y coordinates
+  icons.forEach(function (icon, index) {
+    icon.x = index % TILE_X;
+    icon.y = Math.floor(index / TILE_X);
+  });
+
+  var spriteId;
+  return spritesController.addSprite()
+    .then(function (result) {
+      spriteId = result.spriteId;
+      return saveSpriteFile(icons, result.spriteFilename);
+    })
+    .then(function () {
+      return spritesController.addSpriteIcons(spriteId, icons);
+    });
 };
