@@ -1,6 +1,10 @@
 'use strict';
 
 module.exports = {
+  server: {
+    port: 3000,
+    templateEngine: 'swig'
+  },
   db: {
     host : 'localhost',
     database : 'app_store_vis',

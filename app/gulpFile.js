@@ -1,100 +1,232 @@
+/* jshint camelcase:false */
+
 'use strict';
 
+var config = require('./config/build.config.js');
+// var karmaConfig = require('./build/karma.config.js');
+// var protractorConfig = require('./build/protractor.config.js');
+// var karma = require('karma').server;
 var gulp = require('gulp');
-var csslint = require('gulp-csslint');
-var jshint = require('gulp-jshint');
-var nodemon = require('gulp-nodemon');
-var livereload = require('gulp-livereload');
-var uglify = require('gulp-uglifyjs');
-var concat = require('gulp-concat');
-var minifyCSS = require('gulp-minify-css');
-var rename = require('gulp-rename');
-var mocha = require('gulp-mocha');
-var karma = require('gulp-karma');
+var $ = require('gulp-load-plugins')();
+var runSequence = require('run-sequence');
+var browserSync = require('browser-sync');
+var pkg = require('./package');
+var del = require('del');
+var _ = require('lodash');
 
-var applicationJavaScriptFiles, 
-    applicationCSSFiles,
-    applicationTestFiles;
+// var webdriverStandalone = require('gulp-protractor').webdriver_standalone;
+// var webdriverUpdate = require('gulp-protractor').webdriver_update;
 
-gulp.task('jshint', function() {
-  gulp.src(['gulpFile.js', 'server.js', 'config/**/*.js', 'app/**/*.js', 'public/js/**/*.js', 'public/modules/**/*.js'])
-    .pipe(jshint())
-    .pipe(jshint.reporter('default'));
-});
+// load sub gulp tasks
+// require('require-dir')('./gulp_tasks');
 
-gulp.task('csslint', function() {
-  gulp.src(['public/modules/**/css/*.css'])
-    .pipe(csslint('.csslintrc'))
-    .pipe(csslint.reporter());
-});
+//update webdriver if necessary, this task will be used by e2e task
+// gulp.task('webdriver:update', webdriverUpdate);
 
-gulp.task('nodemon', function (done) {
-  nodemon({ script: 'server.js', env: { 'NODE_ENV': 'development' }})
-    .on('restart');
-});
+// run unit tests and watch files
+// gulp.task('tdd', function(cb) {
+//   karma.start(_.assign({}, karmaConfig, {
+//     singleRun: false,
+//     action: 'watch',
+//     browsers: ['PhantomJS']
+//   }), cb);
+// });
 
+// run unit tests with travis CI
+// gulp.task('travis', ['build'], function(cb) {
+//   karma.start(_.assign({}, karmaConfig, {
+//     singleRun: true,
+//     browsers: ['PhantomJS']
+//   }), cb);
+// });
 
-gulp.task('uglify', function() {
-  gulp.src(applicationJavaScriptFiles)
-    .pipe(uglify('application.min.js',
-    {
-      outSourceMap : true
+// optimize images and put them in the dist folder
+gulp.task('images', function() {
+  return gulp.src(config.images)
+    .pipe($.imagemin({
+      progressive: true,
+      interlaced: true
     }))
-    .pipe(gulp.dest('public/dist'));
+    .pipe(gulp.dest(config.dist + '/assets/images'))
+    .pipe($.size({
+      title: 'images'
+    }));
 });
 
-gulp.task('cssmin', function () {
-  gulp.src(applicationCSSFiles)
-     .pipe(concat('application.css'))
-     .pipe(minifyCSS())
-     .pipe(rename('application.min.css'))
-     .pipe(gulp.dest('public/dist')); 
-});
-
-gulp.task('mochaTest', function () {
-    process.env.NODE_ENV = 'test';
-    gulp.src(['server.js','app/tests/**/*.js'])
-        .pipe(mocha({reporter: 'spec'}));
-});
-
-gulp.task('karma', function () {
-    gulp.src(applicationTestFiles)
-    .pipe(karma({
-      configFile: 'karma.conf.js',
-      action: 'run'
+//generate angular templates using html2js
+gulp.task('templates', function() {
+  return gulp.src(config.tpl)
+    .pipe($.changed(config.tmp))
+    .pipe($.html2js({
+      outputModuleName: 'templates',
+      base: 'client',
+      useStrict: true
     }))
-    .on('error', function(err) {
-      // Make sure failed tests cause gulp to exit non-zero
-      throw err;
-    });
+    .pipe($.concat('templates.js'))
+    .pipe(gulp.dest(config.tmp))
+    .pipe($.size({
+      title: 'templates'
+    }));
 });
 
-gulp.task('watch', function() {
-  var server = livereload();
-  gulp.watch(['gulpFile.js', 'server.js', 'config/**/*.js', 'app/**/*.js', 'public/js/**/*.js', 'public/modules/**/*.js'], ['jshint']);
-  gulp.watch(['public/**/css/*.css'], ['csslint']);
+//generate css files from scss sources
+gulp.task('sass', function() {
+  return gulp.src([
+      config.mainScss,
+      config.projectScss,
+      config.additionalScss
+    ])
+    .pipe($.sass())
+    .on('error', $.sass.logError)
+    .pipe(gulp.dest(config.tmp))
+    .pipe($.size({
+      title: 'sass'
+    }));
+});
 
-  gulp.watch(['gruntfile.js', 'server.js', 'config/**/*.js', 'app/**/*.js', 'public/modules/**/views/*.html', 'public/js/**/*.js', 'public/modules/**/*.js', 'public/**/css/*.css']).on('change', function(file) {
-      server.changed(file.path);
+//build files for creating a dist release
+gulp.task('build:dist', ['clean'], function(cb) {
+  runSequence(
+    'jshint',
+    [
+      'build',
+      'copy',
+      // 'copy:assets',
+      // 'copy:static',
+      // 'project_apps:build',
+      'images'
+      // 'test:unit'
+    ],
+    'html',
+    // 'dynamic:css',
+    // 'removeSourceMap',
+    cb);
+});
+
+//build files for development
+gulp.task('build', ['clean:tmp'], function(cb) {
+  runSequence(['createGlobals', 'sass', 'templates'], cb);
+});
+
+//generate a minified css files, 2 js file, change theirs name to be unique, and generate sourcemaps
+gulp.task('html', function() {
+  var assets = $.useref.assets({
+    searchPath: '{build,client}'
   });
+
+  return gulp.src(config.index)
+    .pipe(assets)
+    .pipe($.sourcemaps.init())
+    .pipe($.if('**/*main.js', $.ngAnnotate()))
+    .pipe($.if('*.js', $.uglify({
+      mangle: false,
+    })))
+    .pipe($.if('*.css', $.csso()))
+    .pipe($.if(['**/*main.js', '**/*main.css'], $.header(config.banner, {
+      pkg: pkg
+    })))
+    .pipe($.rev())
+    .pipe(assets.restore())
+    .pipe($.useref())
+    .pipe($.revReplace())
+    .pipe($.if('*.html', $.minifyHtml({
+      empty: true
+    })))
+    .pipe($.sourcemaps.write())
+    .pipe(gulp.dest(config.dist))
+    .pipe($.size({
+      title: 'html'
+    }));
 });
 
- gulp.task('loadConfig', function() {
-  var init = require('./config/init')();
-  var config = require('./config/config');
-  applicationJavaScriptFiles = config.assets.js;
-  applicationCSSFiles = config.assets.css;
-  applicationTestFiles = config.assets.lib.js.concat(config.assets.js, config.assets.tests);
+//copy assets in dist folder
+gulp.task('copy:assets', function() {
+  return gulp.src(config.assets, {
+      dot: true
+    }).pipe(gulp.dest(config.dist + '/assets'))
+    .pipe($.size({
+      title: 'copy:assets'
+    }));
 });
 
-// Default task(s).
-gulp.task('default', ['jshint', 'csslint','nodemon', 'watch']);
+//copy assets in dist folder
+gulp.task('copy', function() {
+  return gulp.src([
+      config.base + '/*',
+      '!' + config.base + '/json',
+      '!' + config.base + '/projects',
+      '!' + config.base + '/additional',
+      '!' + config.base + '/*.html',
+      '!' + config.base + '/src',
+      '!' + config.base + '/test'
+    ])
+    .pipe(gulp.dest(config.dist))
+    .pipe($.size({
+      title: 'copy'
+    }));
+});
 
-// Lint task(s).
-gulp.task('lint', ['jshint', 'csslint']);
+// Added by xzhao: copy static files to dist
+gulp.task('copy:static', function() {
+  return gulp.src([
+      // added by xzhao
+      config.base + '/json/globals.json',
+      config.base + '/projects/*',
+      '!' + config.base + '/projects/md',
+      config.base + '/additional/*'
+    ], {
+      base: config.base
+    })
+    .pipe(gulp.dest(config.dist))
+    .pipe($.size({
+      title: 'copy:static'
+    }));
+});
 
-// Build task(s).
-gulp.task('build', ['jshint', 'csslint', 'loadConfig', 'uglify', 'cssmin']);
+//clean temporary directories
+gulp.task('clean', del.bind(null, [config.dist, config.tmp]));
 
-// Test task.
-gulp.task('test', ['loadConfig', 'mochaTest', 'karma']);
+// Clean only tmp directory. Used by gulp serve
+gulp.task('clean:tmp', del.bind(null, [config.tmp]));
+
+//lint files
+gulp.task('jshint', function() {
+  return gulp.src(config.js)
+    .pipe(reload({
+      stream: true,
+      once: true
+    }))
+    .pipe($.jshint())
+    .pipe($.jshint.reporter('jshint-stylish'))
+    .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
+});
+
+//run unit tests and exit
+// gulp.task('test:unit', ['build'], function(cb) {
+//   karma.start(_.assign({}, karmaConfig, {
+//     singleRun: true
+//   }), cb);
+// });
+
+// Run e2e tests using protractor, make sure serve task is running.
+// gulp.task('test:e2e', ['webdriver:update'], function() {
+//   return gulp.src(protractorConfig.config.specs)
+//     .pipe($.protractor.protractor({
+//       configFile: 'build/protractor.config.js'
+//     }))
+//     .on('error', function(e) {
+//       throw e;
+//     });
+// });
+
+//run the server,  watch for file changes and redo tests.
+gulp.task('serve:tdd', function(cb) {
+  runSequence('serve', 'tdd', cb);
+});
+
+//run the server after having built generated files, and watch for changes
+gulp.task('watch', ['build'], function() {
+  gulp.watch(config.scss, ['sass']);
+  gulp.watch(config.js, ['jshint']);
+  gulp.watch(config.tpl, ['templates']);
+});
