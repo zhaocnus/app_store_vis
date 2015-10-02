@@ -1,0 +1,50 @@
+// Base font size in used in _mixins.scss /////////////////
+$base-root-size: 16;
+
+// This is only used by footer on all screen sizes
+$font-size-xs: 14;
+
+// small screen
+$font-size-s: 14;
+$font-size-m: 18;
+$font-size-l: 24;
+$font-size-xl: 36;
+$font-size-xxl: 54;
+
+// medium screem
+$font-size-s-medium: 16;
+$font-size-m-medium: 22;
+$font-size-l-medium: 28;
+$font-size-xl-medium: 42;
+$font-size-xxl-medium: 64;
+
+// large screen
+$font-size-s-large: 16;
+$font-size-m-large: 24;
+$font-size-l-large: 32;
+$font-size-xl-large: 54;
+$font-size-xxl-large: 64;
+
+// Colors //////////////////////////////////
+$white: #fff;
+$light-gray: #f6f6f6;
+$medium-gray: #e7e7e7;
+$dark-gray: #2d2d2d;
+$black: #222;
+$deep-blue: #2c465a;
+
+$top-nav-bg-color: #2d2d2d;
+$mobile-category-title-color: #2d2d2d;
+$top-nav-color: #8F8F8F;
+
+// size related //////////////////////////////////
+$home-hor-padding: 10%;
+$home-hor-padding-s: 20px;
+$home-hor-padding-m: 60px;
+$home-hor-padding-l: 100px;
+$top-nav-height: 60px;
+
+// hover black opacity //////////////////////////////////
+$text-overlay-opacity: 0.2;
+$hover-opacity: 0.85;
+

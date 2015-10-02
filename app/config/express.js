@@ -51,8 +51,10 @@ module.exports.init = function () {
   app.use(bodyParser.json());
 
 
-  var staticPath = path.resolve(__dirname, '../client');
-  app.use(express.static(staticPath));
+  var clientPath = path.resolve(__dirname, '../client'),
+      buildPath = path.resolve(__dirname, '../build');
+  app.use(express.static(clientPath));
+  app.use(express.static(buildPath));
 
   // Globbing routing files
   config.getGlobbedFiles('./server/routes/**/*.js').forEach(function(routePath) {

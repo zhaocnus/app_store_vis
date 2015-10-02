@@ -1,5 +1,7 @@
 {% extends 'layout.server.view.html' %}
 
 {% block content %}
-	<section data-ui-view>Hahahahahahahha</section>
+  <header ui-view="header"></header>
+  <div ui-view="main" autoscroll="true"></div>
+  <footer ui-view="footer"></footer>
 {% endblock %}

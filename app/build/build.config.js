@@ -8,9 +8,9 @@ module.exports = {
   tpl: 'client/src/**/*.tpl.html',
   mainScss: 'client/src/scss/main.scss',
   scss: 'client/src/scss/**/*.scss',
-  js: [
+  jshint: [
     'client/src/**/*.js',
-    '!client/src/vendor/**/*.js',
+    '!client/bower_components/**/*.js',
     'client/test/unit/**/*.js',
     'client/test/e2e/**/*.js'
   ],

@@ -1,0 +1,121 @@
+/* Defaults
+   ========================================================================== */
+
+html,
+body {
+  @include font-size($base-root-size);
+  @include font-regular();
+  line-height: 1.5;
+  color: $black;
+  width: 100%;
+  background-color: $white;
+}
+
+// media queries debug
+.media-query-debug {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  z-index: 9999;
+  background-color: red;
+  @include breakpoint(medium) { background-color: yellow; }
+  @include breakpoint(large) { background-color: green; }
+}
+
+%a {
+  text-decoration: none;
+  color: $black;
+  &:visited {
+    color: $black;
+  }
+}
+
+a {
+  @extend %a;
+}
+
+%ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, p {
+  @include box-reset();
+}
+
+h1, h2, h3, h4 {
+  @include font-bold();
+}
+
+h1 {
+  @include font-size($font-size-xxl);
+
+  @include breakpoint(medium) {
+    @include font-size($font-size-xxl-medium);
+  }
+
+  @include breakpoint(large) {
+    @include font-size($font-size-xxl-large);
+  }
+}
+
+h2 {
+  @include font-size($font-size-xl);
+
+  @include breakpoint(medium) {
+    @include font-size($font-size-xl-medium);
+  }
+
+  @include breakpoint(large) {
+    @include font-size($font-size-xl-large);
+  }
+}
+
+h3 {
+  @include font-size($font-size-l);
+
+  @include breakpoint(medium) {
+    @include font-size($font-size-l-medium);
+  }
+
+  @include breakpoint(large) {
+    @include font-size($font-size-l-large);
+  }
+}
+
+h4 {
+  @include font-size($font-size-m);
+
+  @include breakpoint(medium) {
+    @include font-size($font-size-m-medium);
+  }
+
+  @include breakpoint(large) {
+    @include font-size($font-size-m-large);
+  }
+}
+
+p {
+  @include font-size($font-size-s);
+  @include font-regular();
+
+  @include breakpoint(medium) {
+    @include font-size($font-size-s-medium);
+  }
+
+  @include breakpoint(large) {
+    @include font-size($font-size-s-large);
+  }
+}
+
+em {
+  @include font-bold();
+}
+
+// use background-image as image
+.bg-img {
+  @include bg-img();
+}
