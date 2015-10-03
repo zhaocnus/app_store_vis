@@ -5,13 +5,16 @@
    * @name  HomeCtrl
    * @description Controller
    */
-  function homeCtrl($scope) {
-    $scope.tmp = 'Home';
+  function homeCtrl($scope, DataService) {
+    $scope.icon = DataService.icons.get({iconId: 223});
+
+    $scope.icons = DataService.icons.query({max: 0, min: 0});
   }
 
   angular.module('home')
     .controller('HomeCtrl', [
       '$scope',
+      'DataService',
       homeCtrl
     ]);
 })();

@@ -5,8 +5,6 @@
     $urlRouterProvider.otherwise('/');
     $locationProvider.hashPrefix('!');
 
-    console.log('config');
-
     // root state
     $stateProvider.state('root', {
       views: {
@@ -25,8 +23,10 @@
   angular.module('app', [
     // vendor modules
     'ui.router',
+    'ngResource',
 
     // app sub-modules
+    'common.services.data',
     'common.header',
     'common.footer',
     'home',
@@ -40,7 +40,6 @@
   ]);
 
   angular.element(document).ready(function() {
-    console.log('ready');
     angular.bootstrap(document, ['app']);
   });
 
