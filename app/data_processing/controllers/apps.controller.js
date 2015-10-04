@@ -81,19 +81,34 @@ module.exports.getNumRows = function(cb) {
 /**
  * Gets un-processed rows using offset and limit
  */
-module.exports.getUnProcessedRows = function(limit, offset) {
+ module.exports.getUnprocessedRows = function(cb) {
   // NOT NULL filename means this
   // row has already been processed
-  var query = util.format(
-    'SELECT track_id AS id, ' +
-      'artwork_url60 AS url ' +
+  var query =
+    'SELECT track_id AS id, artwork_url60 AS url ' +
     'FROM apps ' +
-    'WHERE filename IS NULL ' +
-    'LIMIT %d OFFSET %d',
-    limit, offset);
+    'WHERE filename IS NULL';
 
-  return conn.query(query);
+  conn.query(query)
+    .then(function (result) {
+      cb(null, result);
+    }, function (err) {
+      cb(err);
+    });
 };
+// module.exports.getUnprocessedRows = function(limit, offset) {
+//   // NOT NULL filename means this
+//   // row has already been processed
+//   var query = util.format(
+//     'SELECT track_id AS id, ' +
+//       'artwork_url60 AS url ' +
+//     'FROM apps ' +
+//     'WHERE filename IS NULL ' +
+//     'LIMIT %d OFFSET %d',
+//     limit, offset);
+
+//   return conn.query(query);
+// };
 
 /**
  * Gets processed rows by offset and limit

@@ -15,23 +15,20 @@ var pconsole = require('./modules/p-console');
 var appsController = require('./controllers/apps.controller');
 
 // constants
-var ROWS_PER_QUERY = 100;
+//var ROWS_PER_QUERY = 100;
+var NUM_ROWS_IN_GROUP = 100;
 var DELAY = 3000;
 
 /**
  * Process rows by LIMIT and OFFSET
  **/
-function processRows(offset, cb) {
-  appsController
-    .getUnProcessedRows(ROWS_PER_QUERY, offset)
-    .then(function (rows) {
-      var rowStart = offset + 1;
-      var rowEnd = offset + ROWS_PER_QUERY;
+function processRows(group, cb) {
+  var rowStart = group.id * NUM_ROWS_IN_GROUP + 1,
+      rowEnd = rowStart + NUM_ROWS_IN_GROUP;
+  pconsole.dividor();
+  pconsole.log('Downloading row ' + rowStart + ' - ' + rowEnd, true);
 
-      pconsole.dividor();
-      pconsole.log('Downloading row ' + rowStart + ' - ' + rowEnd, true);
-      return imgDownloader.bulkDownload(rows);
-    })
+  imgDownloader.bulkDownload(group.data)
     .then(function (images) {
       pconsole.log('Analyzing images', true);
       return imgAnalyzer.bulkAnalyze(images);
@@ -52,16 +49,23 @@ function processRows(offset, cb) {
 /**
  * Process all rows
  **/
-function processAll(numRows, cb) {
-  var offsets = [];
+function processAll(rows, cb) {
+  var groups = [],
+      i = 0,
+      len = rows.length;
 
-  console.log(numRows);
+  while (rows.length > 0) {
+    groups.push({
+      id: i,
+      data: rows.splice(0, NUM_ROWS_IN_GROUP)
+    });
 
-  for (var offset = 0; offset < numRows; offset += ROWS_PER_QUERY) {
-    offsets.push(offset);
+    i += 1;
   }
 
-  async.eachSeries(offsets, processRows, function (err) {
+  pconsole.log('Processing ' + len + ' rows in ' + groups.length + ' groups');
+
+  async.eachSeries(groups, processRows, function (err) {
     if (err) {
       throw err;
     }
@@ -75,7 +79,7 @@ function processAll(numRows, cb) {
  **/
 function init() {
   async.waterfall([
-    appsController.getNumRows,
+    appsController.getUnprocessedRows,
     processAll
   ], function (err) {
     if (err) {
