@@ -1,4 +1,12 @@
 <div class="home">
-  <ul>
-    <li ng-repeat="g in grayscales">{{g.value}} : {{g.num}}</li>
+  <div class="grayscale-container">
+    <ul>
+      <li ng-repeat="g in grayscales"
+        ng-click="onBarClicked(g.value)"
+        ng-class="{'selected': g.value === selectedGrayscale}">
+        <div class="bar" ng-style="{'width': g.per, 'background-color': g.color}"></div>
+        <p>{{g.value}} | {{g.count}}</p>
+      </li>
+    </ul>
+  </div>
 </div>

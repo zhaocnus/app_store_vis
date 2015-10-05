@@ -22,10 +22,10 @@ module.exports.list = function(req, res) {
 
 module.exports.findByGrayscale = function(req, res) {
   var query =
-    'SELECT grayscale AS value, count(grayscale) AS num ' +
-    'FROM apps ' +
-    'WHERE grayscale IS NOT NULL ' +
-    'GROUP BY grayscale';
+      'SELECT `grayscale` AS `value`, count(`grayscale`) AS `count` ' +
+      'FROM `apps` ' +
+      'WHERE `grayscale` IS NOT NULL ' +
+      'GROUP BY `grayscale`';
 
   conn.query(query)
     .then(function (result) {
