@@ -10,4 +10,8 @@ module.exports = function(app) {
 	// list of icons
 	app.route('/api/icons')
 		.get(iconsController.list);
+
+  // find by grayscale
+  app.route('/api/icons_grayscale')
+    .get(iconsController.findByGrayscale);
 };

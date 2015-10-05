@@ -3,7 +3,8 @@
 
   function dataService($resource) {
     return {
-      icons: $resource('/api/icons/:iconId', {iconId: '@id'})
+      icons: $resource('/api/icons/:iconId', {iconId: '@id'}),
+      iconGrayscale: $resource('/api/icons_grayscale', {iconId: '@id'})
     };
   }
 

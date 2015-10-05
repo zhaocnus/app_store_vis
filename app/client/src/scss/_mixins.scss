@@ -1,35 +1,18 @@
-// light font for typekit
+// fonts
 @mixin font-light() {
-  font-family: "lato",sans-serif;
+  font-family: arial,sans-serif;
   font-style: normal;
-  font-weight: 300;
+  font-weight: 100;
 }
-// regular font for typekit
 @mixin font-regular() {
-  font-family: "lato",sans-serif;
+  font-family: arial,sans-serif;
   font-style: normal;
   font-weight: 400;
 }
-// italic font for typekit
-@mixin font-italic() {
-  font-family: "lato",sans-serif;
-  font-style: italic;
-  font-weight: 400;
-}
-// bold font for typekit
 @mixin font-bold() {
-  font-family: "lato",sans-serif;
+  font-family: arial,sans-serif;
   font-style: normal;
-  font-weight: 700;
-}
-
-// pointer
-@mixin pointer() {
-  cursor: pointer;
-}
-// pointer allow through
-@mixin pointer-invisible() {
-  pointer-events: none;
+  font-weight: 900;
 }
 
 // opacity setting
@@ -37,20 +20,6 @@
   opacity: $opacity;
   $opacity-ie: $opacity * 100;
   filter: alpha(opacity=$opacity-ie); //IE8
-}
-
-// Uses box-shadow for inner border
-@mixin border-rim($color) {
-  -webkit-box-shadow: inset -4px -4px 0px 0px $color;
-  -moz-box-shadow: inset -4px -4px 0px 0px $color;
-  box-shadow: inset -4px -4px 0px 0px $color;
-}
-
-// Uses box-shadow for inner border
-@mixin border-bottom-rim($color) {
-  -webkit-box-shadow: inset 0px -4px 0px 0px $color;
-  -moz-box-shadow: inset 0px -4px 0px 0px $color;
-  box-shadow: inset 0px -4px 0px 0px $color;
 }
 
 // px to rem sizing with px fallout
@@ -61,13 +30,13 @@
 
 // box Sizing
 @mixin box-sizing ($type : border-box) {
-  //content-box | border-box | inherit
+  // content-box | border-box | inherit
   -webkit-box-sizing: $type;
   -moz-box-sizing: $type;
   box-sizing: $type;
 }
 @mixin border-box() {
-  @include box-sizing( border-box );
+  @include box-sizing(border-box);
 }
 
 // reset border, margin, and padding
@@ -75,17 +44,6 @@
   margin: 0;
   padding: 0;
   border: 0 none;
-}
-
-// selection
-@mixin selection() {
-  background: #b3d4fc;
-  text-shadow: none;
-}
-
-// placeholder
-@mixin placeholder() {
-  color: #999;
 }
 
 // vertical align (http://zerosixthree.se/vertical-align-anything-with-just-3-lines-of-css/)
@@ -118,30 +76,19 @@
   background-size: $size;
 }
 
-// center element with fixed width, height, and position is absolute
-@mixin abs-pos-center($width, $height) {
-  position: absolute;
-  width: $width;
-  height: $height;
-  top: 50%;
-  left: 50%;
-  margin-left: -($width / 2);
-  margin-top: -($height / 2);
-}
-
 // css transitions
 @mixin transition($transition) {
+  -webkit-transition: $transition;
   -moz-transition: $transition;
   -o-transition: $transition;
-  -webkit-transition: $transition;
   transition: $transition;
 }
 
 // css transform
 @mixin transform($transforms) {
-  -moz-transform: $transforms;
-  -o-transform: $transforms;
-  -ms-transform: $transforms;
   -webkit-transform: $transforms;
+  -moz-transform: $transforms;
+  -ms-transform: $transforms;
+  -o-transform: $transforms;
   transform: $transforms;
 }

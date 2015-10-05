@@ -3,10 +3,6 @@
   margin-left: auto;
 }
 
-%text-center {
-  text-align: center;
-}
-
 %clearfix {
   &::before,
   &::after {
@@ -18,41 +14,10 @@
   }
 }
 
-.text-center {
-  @extend %text-center;
-}
-
 // disable user select
 .no-user-select {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-
-// responsize video container for 1920x1080 video
-// html example:
-/* ---------------------------
-  <div class="helper-responsive-video-container">
-    <img src="assets/images/responsive-iframe.png" width="240" height="135">
-    <iframe src="you video url" frameborder="0" width="1920" height="1080"></iframe>
-  </div>
---------------------------------*/
-.helper-responsive-video-container {
-  position: relative;
-
-  img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  iframe {
-    border: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
 }
