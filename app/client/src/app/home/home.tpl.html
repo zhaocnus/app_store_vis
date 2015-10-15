@@ -1,4 +1,18 @@
 <div class="home">
+  <div class="pie-chart-container" ng-controller="PieChartCtrl">
+    <svg id="pie-chart" height="600" width="600" viewBox="0 0 600 600">
+      <!-- <circle id="circle" ng-attr-cx="{{width}}" ng-attr-cy="{{height}}" r="40" stroke="black" stroke-width="3" fill="red" /> -->
+      <g ng-repeat="grayscale in grayscales" ng-attr-transform="rotate({{grayscale.rotation}})" ng-cloak>
+        <!--<path ng-attr-d="{{path}}" stroke="black" stroke-width="1" fill="none"/>-->
+        <path ng-attr-d="{{grayscale.outerPath}}" stroke="#000" fill="none"/>
+        <path ng-attr-d="{{grayscale.innerPath}}" stroke="none" ng-attr-fill="rgb({{grayscale.color}})"/>
+      </g>
+    </svg>
+  </div>
+
+  <!--ng-attr-fill="{{grayscale.color}}"-->
+
+  <!--
   <div class="grayscale-container">
     <ul>
       <li ng-repeat="g in grayscales"
@@ -9,4 +23,5 @@
       </li>
     </ul>
   </div>
+  -->
 </div>
