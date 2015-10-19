@@ -3,7 +3,6 @@
 
   function config($stateProvider, $urlRouterProvider, $locationProvider) {
     $urlRouterProvider.otherwise('/');
-    $locationProvider.hashPrefix('!');
 
     // root state
     $stateProvider.state('root', {

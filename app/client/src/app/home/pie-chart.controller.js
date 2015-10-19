@@ -22,37 +22,50 @@
           }
         });
 
-        // calculate each grayscale's value
         var centerX = 300,
             centerY = 300,
-            radius = 250,
+            radius = 150,
+            maxOffset = 100,
             angel = 360 / 256,
             radian = Math.PI / 128,
-            startX = centerX,
-            startY = centerY - radius,
-            endX = startX + radius * Math.sin(radian),
-            endY = startY + radius * (1 - Math.cos(radian));
+            sin = Math.sin(radian),
+            cos = Math.cos(radian);
+        var borderPath = 'M' + centerX + ' ' + (centerY - radius - maxOffset) +
+            'L' + centerX + ' ' + (centerY - radius);
+        var maxRadius = radius + maxOffset;
+        var hitAreaPath = 'M' + centerX + ' ' + (centerY - radius - maxOffset) +
+            'A' + maxRadius + ' ' + maxRadius + ' ' +
+            '0,0,1 ' + (centerX + maxRadius * sin) + ' ' + (centerY - maxRadius * cos) + ' ' +
+            'L' + (centerX + radius * sin) + ' ' + (centerY - radius * cos) + ' ' +
+            'A' + radius + ' ' + radius + ' ' +
+            '0,0,0 ' + centerX + ' ' + (centerY - radius) + 'Z';
+
         angular.forEach(grayscales, function (g, index) {
           var val = g.value,
-              innerRadius = radius * (g.count / max),
-              innerStartY = centerY - innerRadius,
-              innerEndX = startX + innerRadius * Math.sin(radian),
-              innerEndY = innerStartY + innerRadius * (1 - Math.cos(radian));
-
-          g.rotation = (angel * index) + ',' + centerX + ',' + centerY;
-          g.color = val + ',' + val + ',' + val;
+              offset = maxOffset * g.count / max,
+              outerRadius = radius + offset,
+              innerRadius = radius,
+              x1 = centerX,
+              y1 = centerY - outerRadius,
+              x2 = centerX + outerRadius * sin,
+              y2 = centerY - outerRadius * cos,
+              x3 = centerX + innerRadius * sin,
+              y3 = centerY - innerRadius * cos,
+              x4 = centerX,
+              y4 = centerY - innerRadius;
 
           // A rx ry x-axis-rotation large-arc-flag sweep-flag x y
-          // Example: 'M200 100 A 100 100, 0, 0, 1, 300 200 L 200 200 Z';
-          g.innerPath = 'M' + startX + ' ' + innerStartY +
+          g.valuePath = 'M' + x1 + ' ' + y1 +
+            'A' + outerRadius + ' ' + outerRadius + ' ' +
+            '0,0,1 ' + x2 + ' ' + y2 + ' ' +
+            'L' + x3 + ' ' + y3 + ' ' +
             'A' + innerRadius + ' ' + innerRadius + ' ' +
-            '0,0,0 ' + innerEndX + ' ' + innerEndY + ' ' +
-            'L ' + centerX + ' ' + centerY + ' Z';
-
-          g.outerPath = 'M' + startX + ' ' + startY +
-            'A' + radius + ' ' + radius + ' ' +
-            '0,0,0 ' + endX + ' ' + endY + ' ' +
-            'L ' + centerX + ' ' + centerY + ' Z';
+            '0,0,0 ' + x4 + ' ' + y4 + 'Z';
+            //'L' + x1 + ' ' + y1;
+          g.borderPath = borderPath;
+          g.hitAreaPath = hitAreaPath;
+          g.rotation = (angel * index) + ',' + centerX + ',' + centerY;
+          g.color = val + ',' + val + ',' + val;
         });
 
         $scope.grayscales = grayscales;

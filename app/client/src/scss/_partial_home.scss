@@ -47,3 +47,35 @@
     }
   }
 }
+
+.home .pie-chart-container {
+  .grayscale-group {
+    // normal styles
+    cursor: pointer;
+
+    .hit-area {
+      fill: #7ab8d3;
+      stroke: none;
+    }
+
+    .border {
+      stroke: #92c1d5;
+      stroke-width: 1;
+      fill: none;
+    }
+
+    .value {
+      stroke: none;
+    }
+
+    // hover styles
+    &:hover {
+      // @include transition(all 0.4s);
+      // @include transform(scale(2,2));
+      // transform-origin: center center;
+    }
+    &:hover .hit-area {
+      fill: #5e8a9d;
+    }
+  }
+}

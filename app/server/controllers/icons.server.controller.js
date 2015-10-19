@@ -25,11 +25,28 @@ module.exports.findByGrayscale = function(req, res) {
       'SELECT `grayscale` AS `value`, count(`grayscale`) AS `count` ' +
       'FROM `apps` ' +
       'WHERE `grayscale` IS NOT NULL ' +
-      'GROUP BY `grayscale`';
+      'GROUP BY `grayscale` ' +
+      'ORDER BY `grayscale`';
 
   conn.query(query)
     .then(function (result) {
-      return res.status(200).send(result);
+      var grayscales = [];
+      var resultIndex = 0, resultItem;
+
+      for (var i = 0; i < 256; i += 1) {
+        resultItem = result[resultIndex];
+        if (resultItem.value === i) {
+          grayscales.push(resultItem);
+          resultIndex += 1;
+        } else {
+          grayscales.push({
+            value: i,
+            count: 0
+          });
+        }
+      }
+
+      return res.status(200).send(grayscales);
     }, function (err) {
       return res.status(400).send({
         message: err
