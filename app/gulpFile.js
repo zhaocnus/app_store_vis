@@ -130,6 +130,7 @@ gulp.task('copy', function() {
 gulp.task('nodemon', function (done) {
   $.nodemon({
     script: 'server.js',
+    ignore: '/**/tmp/**/*',
     env: { 'NODE_ENV': 'development' }
   })
   .on('restart');

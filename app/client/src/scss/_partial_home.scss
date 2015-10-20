@@ -55,27 +55,28 @@
 
     .hit-area {
       fill: #7ab8d3;
-      stroke: none;
     }
 
     .border {
       stroke: #92c1d5;
       stroke-width: 1;
-      fill: none;
     }
 
-    .value {
-      stroke: none;
+    .selected-area, text {
+      opacity: 0;
+      @include transition(opacity 0.1s);
+    }
+
+    text {
+      font-size: 12px;
+      fill: #333;
+      text-anchor: middle;
     }
 
     // hover styles
-    &:hover {
-      // @include transition(all 0.4s);
-      // @include transform(scale(2,2));
-      // transform-origin: center center;
-    }
-    &:hover .hit-area {
-      fill: #5e8a9d;
+    &:hover .selected-area,
+    &:hover text {
+      opacity: 1;
     }
   }
 }

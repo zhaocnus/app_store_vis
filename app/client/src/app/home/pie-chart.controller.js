@@ -30,16 +30,6 @@
             radian = Math.PI / 128,
             sin = Math.sin(radian),
             cos = Math.cos(radian);
-        var borderPath = 'M' + centerX + ' ' + (centerY - radius - maxOffset) +
-            'L' + centerX + ' ' + (centerY - radius);
-        var maxRadius = radius + maxOffset;
-        var hitAreaPath = 'M' + centerX + ' ' + (centerY - radius - maxOffset) +
-            'A' + maxRadius + ' ' + maxRadius + ' ' +
-            '0,0,1 ' + (centerX + maxRadius * sin) + ' ' + (centerY - maxRadius * cos) + ' ' +
-            'L' + (centerX + radius * sin) + ' ' + (centerY - radius * cos) + ' ' +
-            'A' + radius + ' ' + radius + ' ' +
-            '0,0,0 ' + centerX + ' ' + (centerY - radius) + 'Z';
-
         angular.forEach(grayscales, function (g, index) {
           var val = g.value,
               offset = maxOffset * g.count / max,
@@ -61,14 +51,26 @@
             'L' + x3 + ' ' + y3 + ' ' +
             'A' + innerRadius + ' ' + innerRadius + ' ' +
             '0,0,0 ' + x4 + ' ' + y4 + 'Z';
-            //'L' + x1 + ' ' + y1;
-          g.borderPath = borderPath;
-          g.hitAreaPath = hitAreaPath;
           g.rotation = (angel * index) + ',' + centerX + ',' + centerY;
           g.color = val + ',' + val + ',' + val;
         });
 
         $scope.grayscales = grayscales;
+        $scope.borderPath = 'M' + centerX + ' ' + (centerY - radius - maxOffset) +
+            'L' + centerX + ' ' + (centerY - radius);
+
+        var maxRadius = radius + maxOffset;
+        $scope.hitAreaPath = 'M' + centerX + ' ' + (centerY - radius - maxOffset) +
+            'A' + maxRadius + ' ' + maxRadius + ' ' +
+            '0,0,1 ' + (centerX + maxRadius * sin) + ' ' + (centerY - maxRadius * cos) + ' ' +
+            'L' + (centerX + radius * sin) + ' ' + (centerY - radius * cos) + ' ' +
+            'A' + radius + ' ' + radius + ' ' +
+            '0,0,0 ' + centerX + ' ' + (centerY - radius) + 'Z';
+
+        $scope.selectedAreaPath = 'M' + centerX + ' ' + (centerY - radius - maxOffset) +
+            'A' + maxRadius + ' ' + maxRadius + ' ' +
+            '0,0,1 ' + (centerX + maxRadius * sin) + ' ' + (centerY - maxRadius * cos) + ' ' +
+            'L' + centerX + ' ' + centerY + 'Z';
 
         //$compile(document.getElementById('pie-chart'))($scope);
       });

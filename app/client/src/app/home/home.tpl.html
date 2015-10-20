@@ -1,11 +1,13 @@
 <div class="home">
   <div class="pie-chart-container" ng-controller="PieChartCtrl">
     <svg id="pie-chart" height="600" width="600" viewBox="0 0 600 600">
-
+      <!-- <circle class="center-circle" cx="300" cy="300" r="250"/> -->
       <g class="grayscale-group" ng-repeat="grayscale in grayscales" ng-attr-transform="rotate({{grayscale.rotation}})" ng-cloak>
-        <path class="hit-area" ng-attr-d="{{grayscale.hitAreaPath}}"/>
-        <path class="border" ng-attr-d="{{grayscale.borderPath}}"/>
+        <path class="hit-area" ng-attr-d="{{hitAreaPath}}"/>
+        <path class="border" ng-attr-d="{{borderPath}}"/>
         <path class="value" ng-attr-d="{{grayscale.valuePath}}" ng-attr-fill="rgb({{grayscale.color}})"/>
+        <path class="selected-area" ng-attr-d="{{selectedAreaPath}}" ng-attr-fill="rgb({{grayscale.color}})"/>
+        <text x="300" y="40">{{grayscale.value}}</text>
       </g>
     </svg>
   </div>
