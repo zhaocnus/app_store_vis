@@ -16,6 +16,7 @@ var MAX_NUM_IDS = 50;
 // timeout in ms between each request to avoid
 // request being rejected by itunes server
 var REQUEST_TIMEOUT = 1000;
+var REQUEST_REJECT_TIMEOUT = 8000;
 
 // Split array into chunks
 // Returns a new 2D array
@@ -66,7 +67,12 @@ function requestAppDetail(ids, callback) {
       callback('Itunes request result is not valid.');
     }
   }, function (err) {
-    callback(err);
+    //callback(err);
+    // request timeout
+    pconsole.error('Request rejected. Try again in 8 seconds.');
+    setTimeout(function () {
+      requestAppDetail(ids, callback);
+    }, REQUEST_REJECT_TIMEOUT);
   });
 }
 

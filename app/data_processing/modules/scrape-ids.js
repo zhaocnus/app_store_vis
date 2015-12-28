@@ -1,5 +1,5 @@
 /**
- * Scrapes ios app ID from https://itunes.apple.com
+ * Scrapes ios app IDs from https://itunes.apple.com
  *
  **/
 
@@ -8,8 +8,11 @@
 var cheerio = require('cheerio');
 var async = require('async');
 var bluebird = require('bluebird');
+
 var requestAsync = require('./request-async');
 var pconsole = require('./p-console');
+var appsController = require('../controllers/apps.controller');
+var conn = require('../database/connection');
 
 // limit number of apps for each letter,
 // meaning the total number of apps per
@@ -18,6 +21,8 @@ var MAX_NUM_APPS_PER_LETTER = 5;
 
 // number of ids in a group for bulk processing
 var ID_GROUP_MAX_NUM = 200;
+
+var REQUEST_REJECT_TIMEOUT = 4000;
 
 /*
 Scrape logic
@@ -70,7 +75,8 @@ function getGenreLevel(html) {
 	var pattern = 'https://itunes.apple.com/us/genre/';
 	var $ = cheerio.load(html);
 
-	$('#genre-nav a').each(function () {
+  // get all top-level genres
+	$('#genre-nav a.top-level-genre').each(function () {
 		var href = $(this).attr('href');
 		if (href.indexOf(pattern) > -1) {
 			urls.push(href);
@@ -156,7 +162,11 @@ function getAppIdsByLetter(options, callback) {
     	callback(null, ids);
     }
   }, function (err) {
-  	callback(err);
+  	pconsole.error(err);
+
+    setTimeout(function () {
+      getAppIdsByLetter(options, callback);
+    }, REQUEST_REJECT_TIMEOUT);
   });
 }
 
@@ -177,17 +187,22 @@ function getPopularAppIds(genreUrl, callback) {
 
     callback(null, ids);
   }, function (err) {
-    callback(err);
+    pconsole.error(err);
+
+    setTimeout(function () {
+      getPopularAppIds(genreUrl, callback);
+    }, REQUEST_REJECT_TIMEOUT);
   });
 }
 
 /**
  * Scrape genre app id's
  **/
-module.exports.scrapeGenres = function(genreLevelUrls, progressCallback) {
-  pconsole.header('Scraping itunes website');
+module.exports.scrapeAppIds = function(genreLevelUrls, callback) {
+  pconsole.header('Scraping itunes website for app ids');
   pconsole.dividor();
 
+  // popular apps in each genre
   var urls = genreLevelUrls.map(function (url) {
     return {
       isLetterPage: false,
@@ -195,58 +210,42 @@ module.exports.scrapeGenres = function(genreLevelUrls, progressCallback) {
     };
   });
 
-  return new bluebird(function (resolve, reject) {
-    // get letter pages of all genres
-    var letterLevelUrls = getLetterLevel(genreLevelUrls).map(function (options) {
-      return {
-        isLetterPage: true,
-        data: options
-      };
-    });
-    var idGroup = [];
+  // get letter pages for each genre
+  var letterLevelUrls = getLetterLevel(genreLevelUrls).map(function (options) {
+    return {
+      isLetterPage: true,
+      data: options
+    };
+  });
 
-    // concat all urls
-    urls = urls.concat(letterLevelUrls);
-    //urls = letterLevelUrls;
+  // concat all urls
+  //urls = urls.concat(letterLevelUrls);
+  urls = letterLevelUrls;
 
-    // get all ids in series
-    async.eachSeries(urls, function (url, callback) {
-      var getAppIdsFunc = url.isLetterPage ? getAppIdsByLetter : getPopularAppIds;
+  // get all ids in series
+  async.eachSeries(urls, function (url, cb) {
+    var getAppIdsFunc = url.isLetterPage ? getAppIdsByLetter : getPopularAppIds;
 
-      getAppIdsFunc(url.data, function (err, ids) {
-        if (err) {
-          callback(err);
-          return;
-        }
-
-        idGroup = idGroup.concat(ids);
-
-        pconsole.log('Number of ids in group: ' + idGroup.length + '/' + ID_GROUP_MAX_NUM);
-        pconsole.newLine();
-
-        if (idGroup.length >= ID_GROUP_MAX_NUM) {
-          pconsole.dividor();
-
-          // wait for progressCallback to execute
-          // and then process the next url
-          progressCallback(idGroup).then(function() {
-            idGroup = [];
-            callback(null);
-          }, function(err) {
-            callback(err);
-          });
-        } else {
-          callback(null);
-        }
-      });
-    }, function (err) {
+    getAppIdsFunc(url.data, function (err, ids) {
       if (err) {
-        reject(err);
+        cb(err);
         return;
       }
 
-      resolve();
+      // prepare insert queries
+      var queries = ids.map(function (id) {
+        return appsController.save({id: id}, false);
+      });
+
+      // execute queries
+      conn.execTransaction(queries).then(function () {
+        cb();
+      }, function (err) {
+        cb(err);
+      });
     });
+  }, function (err) {
+    callback(err);
   });
 }
 
@@ -261,6 +260,9 @@ module.exports.getAllGenreUrls = function(cb) {
   requestAsync(homeUrl)
     .then(function (html) {
       var genreLevelUrls = getGenreLevel(html);
+
+      console.log(genreLevelUrls);
+
       cb(null, genreLevelUrls);
     }, function (err) {
       cb('Error : getAllGenreUrls');

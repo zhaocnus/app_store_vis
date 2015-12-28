@@ -9,7 +9,8 @@ function requestAsync(url, options) {
     options = options || {};
     request(url, function (error, response, body) {
       if (error) {
-        throw error;
+        reject(error);
+        return;
       }
 
       if (response && response.statusCode === 200) {
