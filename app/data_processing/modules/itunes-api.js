@@ -4,18 +4,17 @@
 
 'use strict';
 
-var bluebird = require('bluebird');
 var async = require('async');
 var pconsole = require('./p-console');
 var requestAsync = require('./request-async');
 var mainController = require('../controllers/main.controller');
 
 // maximum number of ids allows in an api call
-var MAX_NUM_IDS = 50;
+var MAX_NUM_IDS = 200;
 
 // timeout in ms between each request to avoid
 // request being rejected by itunes server
-var REQUEST_TIMEOUT = 1000;
+var REQUEST_TIMEOUT = 2000;
 var REQUEST_REJECT_TIMEOUT = 8000;
 
 // Split array into chunks
@@ -67,35 +66,32 @@ function requestAppDetail(ids, callback) {
       callback('Itunes request result is not valid.');
     }
   }, function (err) {
-    //callback(err);
     // request timeout
     pconsole.error('Request rejected. Try again in 8 seconds.');
+
     setTimeout(function () {
       requestAppDetail(ids, callback);
     }, REQUEST_REJECT_TIMEOUT);
   });
 }
 
-module.exports.processApps = function(ids) {
-  pconsole.log('Calling itunes api to get app info');
+module.exports.scrapeAllAppDetails = function(ids, callback) {
+  pconsole.log('Calling itunes api to get app detail');
 
-  return new bluebird(function (resolve, reject) {
-    // split ids to groups of 50
-    var idGroup = splitArr(ids, MAX_NUM_IDS);
+  // split ids to groups of MAX_NUM_IDS
+  var idGroup = splitArr(ids, MAX_NUM_IDS);
 
-    var msg = 'Processing: ' + ids.length + ' ids in ' + idGroup.length + ' groups';
-    pconsole.log(msg);
+  var msg = 'Processing: ' + ids.length + ' ids in ' + idGroup.length + ' groups';
+  pconsole.log(msg);
 
-    // Get app detail in group of 50
-    async.eachSeries(idGroup, requestAppDetail,
-      function (err) {
-        if (err) {
-          reject(err);
-        }
+  // Get app detail in group of 50
+  async.eachSeries(idGroup, requestAppDetail, function (err) {
+    if (err) {
+      return callback(err);
+    }
 
-        pconsole.newLine();
-        pconsole.log('Complete ' + idGroup.length + ' groups\n');
-        resolve();
-      });
+    pconsole.newLine();
+    pconsole.log('Complete ' + idGroup.length + ' groups\n');
+    callback();
   });
 }

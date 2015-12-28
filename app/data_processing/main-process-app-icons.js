@@ -15,8 +15,8 @@ var pconsole = require('./modules/p-console');
 var appsController = require('./controllers/apps.controller');
 
 // constants
-var NUM_ROWS_IN_GROUP = 10;
-var DELAY = 3000;
+var NUM_ROWS_IN_GROUP = 20;
+var DELAY = 2000;
 
 /**
  * Process all rows
@@ -102,7 +102,7 @@ function processAll(rows, callback) {
  **/
 function init() {
   async.waterfall([
-    appsController.getUnprocessedRows,
+    appsController.getRowsWithoutDominantColors,
     processAll
   ], function (err) {
     if (err) {

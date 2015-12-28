@@ -62,6 +62,7 @@
   },
   "scripts": {
     "scrapeIds": "node data_processing/main-scrape-app-ids.js",
+    "scrapeDetails": "node data_processing/main-scrape-app-details.js",
     "processIcons": "node data_processing/main-process-app-icons.js"
   }
 }

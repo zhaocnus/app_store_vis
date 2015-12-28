@@ -9,15 +9,16 @@
 var async = require('async');
 var itunesApi = require('./modules/itunes-api');
 var pconsole = require('./modules/p-console');
+var appsController = require('./controllers/apps.controller');
 
 function init() {
   async.waterfall([
 
-    // get all genre urls
-    scraper.getAllGenreUrls,
+    // get apps without details
+    appsController.getRowsWithoutDetails,
 
     // scrape ids for genre
-    scraper.scrapeAppIds
+    itunesApi.scrapeAllAppDetails
   ], function (err) {
     if (err) {
       throw err;

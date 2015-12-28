@@ -39,19 +39,37 @@ module.exports.save = function(data, executeQuery) {
 };
 
 /**
+ * Gets rows without details
+ */
+module.exports.getRowsWithoutDetails = function(cb) {
+  var query =
+    'SELECT id FROM `apps` ' +
+    'WHERE artwork_url60 IS NULL';
+
+  conn.query(query)
+    .then(function (data) {
+      var ids = data.map(function (item) {
+        return item.id;
+      });
+
+      cb(null, ids);
+    }, function (err) {
+      cb(err);
+    });
+};
+
+/**
  * Gets un-processed rows using offset and limit
  */
-module.exports.getUnprocessedRows = function(cb) {
-  // NOT NULL filename means this
-  // row has already been processed
+module.exports.getRowsWithoutDominantColors = function(cb) {
   var query =
-    'SELECT id AS id, artwork_url60 AS url ' +
+    'SELECT id, artwork_url60 AS url ' +
     'FROM `apps` ' +
     'WHERE dominant_color IS NULL';
 
   conn.query(query)
-    .then(function (result) {
-      cb(null, result);
+    .then(function (data) {
+      cb(null, data);
     }, function (err) {
       cb(err);
     });
@@ -71,7 +89,7 @@ module.exports.update = function(data, executeQuery) {
 
   var track_name = getValue('track_name'),
       artwork_url60 = getValue('artwork_url60'),
-      track_view_url = getValue('track_name'),
+      track_view_url = getValue('track_view_url'),
       genre_id = getValue('genre_id'),
       dominant_color = getValue('dominant_color');
 

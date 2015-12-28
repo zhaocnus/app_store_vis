@@ -31,7 +31,7 @@ module.exports.bulkSave = function(appDetailArr) {
       genre_id: genreId
     };
 
-    appsQueries.push( appsController.save(appData, false) );
+    appsQueries.push( appsController.update(appData, false) );
 
     // save app genres
     var genreData = {
