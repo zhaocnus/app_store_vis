@@ -14,7 +14,8 @@
     "express": "^4.13.3",
     "glob": "^5.0.15",
     "mysql": "^2.6.1",
-    "swig": "^1.4.2"
+    "swig": "^1.4.2",
+    "through2": "^2.0.0"
   },
   "devDependencies": {
     "cheerio": "^0.18.0",
@@ -61,7 +62,6 @@
   },
   "scripts": {
     "scrape": "node data_processing/main-scrape.js",
-    "processIcons": "node data_processing/main-process-icons.js",
-    "createSprites": "node data_processing/main-create-sprites.js"
+    "processIcons": "node data_processing/main-process-app-icons.js"
   }
 }
