@@ -21,9 +21,12 @@ var COLUMNS_ARR = [{
 }, {
   name: 'trackViewUrl',
   field: 'track_view_url'
+}, {
+  name: 'primaryGenreId',
+  field: 'genre_id'
 }];
 
-var COLUMNS_STR = '(`id`, `track_name`, `artwork_url60`, `track_view_url`)';
+var COLUMNS_STR = '(`id`, `track_name`, `artwork_url60`, `track_view_url`, `genre_id`)';
 
 var DUPLICATE_UPDATE_STR = dbUtil.getBulkDuplicateUpdateStr(COLUMNS_ARR);
 
@@ -31,10 +34,13 @@ module.exports.save = function(data, executeQuery) {
   // use "ON DUPLICATE KEY UPDATE" to ignore insert if record already exists
   // http://stackoverflow.com/a/4920619/2259286
   var query = util.format(
-    "INSERT INTO `apps` (id, track_name, artwork_url60, track_view_url) " +
-    "VALUES (%d, %s, %s, %s) ON DUPLICATE KEY UPDATE id=id",
-    data.id, conn.escape(data.track_name),
-    conn.escape(data.artwork_url60), conn.escape(data.track_view_url)
+    "INSERT INTO `apps` (id, track_name, artwork_url60, track_view_url, genre_id) " +
+    "VALUES (%d, %s, %s, %s, %d) ON DUPLICATE KEY UPDATE id=id",
+    data.id,
+    conn.escape(data.track_name),
+    conn.escape(data.artwork_url60),
+    conn.escape(data.track_view_url),
+    conn.escape(data.genre_id)
   );
 
   if (executeQuery) {
