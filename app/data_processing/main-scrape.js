@@ -17,22 +17,13 @@ function init() {
     // get all genre urls
     scraper.getAllGenreUrls,
 
-    // For simplicity, filter urls and use only ios games genre
-    function (urls, cb) {
-      // scrape only ios games
-      var regex = /(\/ios-games\/)/,
-        filteredUrls = scraper.filterUrls(urls, regex);
-
-      cb(null, filteredUrls);
-    },
-
-    // scrape ios games genre
-    function (filteredUrls, cb) {
+    // scrape ids for genre
+    function (genreUrls, cb) {
       var progressCallback = function (appIds) {
         return itunesApi.processApps(appIds);
       };
 
-      scraper.scrapeGenres(filteredUrls, progressCallback)
+      scraper.scrapeGenres(genreUrls, progressCallback)
         .then(function () {
           cb(null);
         }, function (err) {

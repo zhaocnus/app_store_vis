@@ -11,43 +11,44 @@ var dbUtil = require('../database/db-util');
 // order of COLUMNS_ARR and COLUMNS_STR needs to match
 var COLUMNS_ARR = [{
   name: 'trackId',
-  field: 'track_id'
+  field: 'id'
 }, {
   name: 'trackName',
   field: 'track_name'
 }, {
   name: 'artworkUrl60',
   field: 'artwork_url60'
+}, {
+  name: 'trackViewUrl',
+  field: 'track_view_url'
 }];
 
-var COLUMNS_STR = '(`track_id`, `track_name`, `artwork_url60`)';
+var COLUMNS_STR = '(`id`, `track_name`, `artwork_url60`, `track_view_url`)';
 
 var DUPLICATE_UPDATE_STR = dbUtil.getBulkDuplicateUpdateStr(COLUMNS_ARR);
 
-/**
- * Filters json file returned from itunes api
- */
-function filterAppDetail(appDetail) {
-  var row = [];
+module.exports.save = function(data, executeQuery) {
+  // use "ON DUPLICATE KEY UPDATE" to ignore insert if record already exists
+  // http://stackoverflow.com/a/4920619/2259286
+  var query = util.format(
+    "INSERT INTO `apps` (id, track_name, artwork_url60, track_view_url) " +
+    "VALUES (%d, %s, %s, %s) ON DUPLICATE KEY UPDATE id=id",
+    data.id, conn.escape(data.track_name),
+    conn.escape(data.artwork_url60), conn.escape(data.track_view_url)
+  );
 
-  COLUMNS_ARR.forEach(function (value) {
-    var key = value.name;
-
-    if (appDetail.hasOwnProperty(key)) {
-      row.push(appDetail[key]);
-    } else {
-      row.push(null);
-    }
-  });
-
-  return row;
-}
+  if (executeQuery) {
+    return conn.query(query);
+  } else {
+    return query;
+  }
+};
 
 /**
  * bulk save apps to database
  * appDetailArr is in group of 50 OR less
  */
-module.exports.bulkSave = function(appDetailArr) {
+module.exports.bulkSave = function(appDetailArr, executeQuery) {
   var rows = [];
 
   appDetailArr.forEach(function(appDetail) {
@@ -55,6 +56,8 @@ module.exports.bulkSave = function(appDetailArr) {
     rows.push(filteredData);
   });
 
+  // use "ON DUPLICATE KEY UPDATE" to ignore insert if record already exists
+  // http://stackoverflow.com/a/4920619/2259286
   var query = util.format(
     'INSERT INTO `apps` %s VALUES %s ON DUPLICATE KEY UPDATE %s',
     COLUMNS_STR,
@@ -62,14 +65,18 @@ module.exports.bulkSave = function(appDetailArr) {
     DUPLICATE_UPDATE_STR
   );
 
-  return conn.query(query);
+  if (executeQuery) {
+    return conn.query(query);
+  } else {
+    return query;
+  }
 };
 
 /**
  * Gets total number of rows
  */
 module.exports.getNumRows = function(cb) {
-  var query = 'SELECT COUNT(track_id) AS count FROM apps';
+  var query = 'SELECT COUNT(id) AS count FROM `apps`';
   conn.query(query)
     .then(function (result) {
       cb(null, result[0].count);
@@ -85,7 +92,7 @@ module.exports.getNumRows = function(cb) {
   // NOT NULL filename means this
   // row has already been processed
   var query =
-    'SELECT track_id AS id, artwork_url60 AS url ' +
+    'SELECT id AS id, artwork_url60 AS url ' +
     'FROM apps ' +
     'WHERE filename IS NULL';
 
@@ -96,19 +103,6 @@ module.exports.getNumRows = function(cb) {
       cb(err);
     });
 };
-// module.exports.getUnprocessedRows = function(limit, offset) {
-//   // NOT NULL filename means this
-//   // row has already been processed
-//   var query = util.format(
-//     'SELECT track_id AS id, ' +
-//       'artwork_url60 AS url ' +
-//     'FROM apps ' +
-//     'WHERE filename IS NULL ' +
-//     'LIMIT %d OFFSET %d',
-//     limit, offset);
-
-//   return conn.query(query);
-// };
 
 /**
  * Gets processed rows by offset and limit
@@ -117,7 +111,7 @@ module.exports.getProcessedRowsInRange = function(limit, offset) {
   var query = util.format(
     'SELECT * ' +
     'FROM apps ' +
-    'WHERE `filename` IS NOT NULL ' +
+    'WHERE `dominant_color` IS NOT NULL ' +
     'LIMIT %d OFFSET %d',
     limit, offset);
 
@@ -137,9 +131,9 @@ module.exports.bulkSaveIconInfo = function(images) {
 
     var query = util.format(
       "UPDATE `apps` " +
-      "SET `grayscale` = %d, `hex` = '%s', `filename` = '%s' " +
-      "WHERE `track_id` = %d" ,
-      img.grayscale, img.hex, img.filename, img.id);
+      "SET `dominant_color` = '%s' " +
+      "WHERE `id` = %d" ,
+      img.hex, img.id);
 
     queries.push(query);
   });

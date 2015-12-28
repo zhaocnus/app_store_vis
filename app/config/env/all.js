@@ -7,7 +7,7 @@ module.exports = {
   },
   db: {
     host : 'localhost',
-    database : 'app_store_vis',
+    database : 'app_store_vis_final',
     user : 'root',
     password : 'root',
     connectionLimit : 10

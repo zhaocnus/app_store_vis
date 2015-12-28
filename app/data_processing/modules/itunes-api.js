@@ -8,8 +8,7 @@ var bluebird = require('bluebird');
 var async = require('async');
 var pconsole = require('./p-console');
 var requestAsync = require('./request-async');
-var appsController = require('../controllers/apps.controller');
-
+var mainController = require('../controllers/main.controller');
 
 // maximum number of ids allows in an api call
 var MAX_NUM_IDS = 50;
@@ -17,7 +16,6 @@ var MAX_NUM_IDS = 50;
 // timeout in ms between each request to avoid
 // request being rejected by itunes server
 var REQUEST_TIMEOUT = 1000;
-
 
 // Split array into chunks
 // Returns a new 2D array
@@ -29,9 +27,11 @@ function splitArr(array, chunk) {
   for (var i = 0; i < array.length; i += chunk) {
     tmpArr = array.slice(i, i + chunk);
     result.push({
-      groupId: grounpId++, // this is just for stdout
+      groupId: grounpId, // this is just for stdout
       arr: tmpArr
     });
+
+    grounpId += 1;
   }
 
   return result;
@@ -50,8 +50,8 @@ function requestAppDetail(ids, callback) {
     }
 
     if (json.results && json.results.length > 0) {
-      // save group to database
-      appsController.bulkSave(json.results).then(function () {
+      // save apps to database
+      mainController.bulkSave(json.results).then(function () {
         pconsole.inline('Group ' + ids.groupId + ' is saved to database.', true);
 
         // IMPORTANT: Add a delay between each request.

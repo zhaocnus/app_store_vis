@@ -11,44 +11,57 @@ var bluebird = require('bluebird');
 var requestAsync = require('./request-async');
 var pconsole = require('./p-console');
 
-// URL LEVELS
-// There are totally 4 levels
-// main/genre/letter(A...Z*)/page(1,2,...)
-// MAIN:      https://itunes.apple.com/us/genre/ios/id36?mt=8
-// GENRE:     https://itunes.apple.com/us/genre/ios-books/id6018?mt=8
-// LETTER:    https://itunes.apple.com/us/genre/ios-books/id6018?mt=8&letter=A
-// PAGE:      https://itunes.apple.com/us/genre/ios-books/id6018?mt=8&letter=A&page=1#page
+// limit number of apps for each letter,
+// meaning the total number of apps per
+// genre is MAX_NUM_APP_PER_LETTER * 27
+var MAX_NUM_APPS_PER_LETTER = 5;
 
-// get page by letter
-// URL pattern:
-// url: https://itunes.apple.com/us/genre/ios-books/id6018?mt=8
-// main alphabetical list: url + '&letter=A'
-// sub alphabetical list: url + '&letter=A' + '&page=2#page'
+// number of ids in a group for bulk processing
+var ID_GROUP_MAX_NUM = 200;
 
-// LETTER
-// We can go through all the letters by using this
-// <div id="selectedgenre">
-//   <ul class="list alpha">
-//     <li>
-//       <a href="https://itunes.apple.com/us/genre/ios-books/id6018?mt=8&letter=A" title="Browse More Books">A</a>
-// ...
-// Or it's also save to just use to A-Z and * directly
+/*
+Scrape logic
+-------------------------------------------
+URL LEVELS
+There are totally 4 levels
+main/genre/letter(A...Z*)/page(1,2,...)
+MAIN:      https://itunes.apple.com/us/genre/ios/id36?mt=8
+GENRE:     https://itunes.apple.com/us/genre/ios-books/id6018?mt=8
+LETTER:    https://itunes.apple.com/us/genre/ios-books/id6018?mt=8&letter=A
+PAGE:      https://itunes.apple.com/us/genre/ios-books/id6018?mt=8&letter=A&page=1#page
 
-// To check if we reach to the last PAGE of a Selected Letter:
-// check if Next bottom exists:
-// <div id="selectedgenre">
-//   <ul class="list paginate">
-//     <li>
-//       <a href="..." class="paginate-more">Next</a>
+get page by letter
+URL pattern:
+url: https://itunes.apple.com/us/genre/ios-books/id6018?mt=8
+main alphabetical list: url + '&letter=A'
+sub alphabetical list: url + '&letter=A' + '&page=2#page'
 
-// On PAGE level, the individual app is a <a> like this
-// <div id="selectedcontent" class="grid3-column">
-//   <div class="column first">
-//     <ul>
-//       <li>
-//         <a href="https://itunes.apple.com/us/app/kindle-read-books-ebooks-magazines/id302584613?mt=8">...</a>
+LETTER
+We can go through all the letters by using this
+<div id="selectedgenre">
+  <ul class="list alpha">
+    <li>
+      <a href="https://itunes.apple.com/us/genre/ios-books/id6018?mt=8&letter=A" title="Browse More Books">A</a>
+...
+Or it's also save to just use to A-Z and * directly
 
-// The FINAL goal here is to get the app id: 302584613
+To check if we reach to the last PAGE of a Selected Letter:
+check if Next bottom exists:
+<div id="selectedgenre">
+  <ul class="list paginate">
+    <li>
+      <a href="..." class="paginate-more">Next</a>
+
+On PAGE level, the individual app is a <a> like this
+<div id="selectedcontent" class="grid3-column">
+  <div class="column first">
+    <ul>
+      <li>
+        <a href="https://itunes.apple.com/us/app/kindle-read-books-ebooks-magazines/id302584613?mt=8">...</a>
+
+The FINAL goal here is to get the app id: 302584613
+
+*/
 
 
 // find all GENRE urls from itunes MAIN page
@@ -124,8 +137,12 @@ function getAppId(options, callback) {
       ids.push(id);
     });
 
-    // there are 2 'Next' buttons
-    var hasMore = $('#selectedgenre li .paginate-more').length > 0;
+    // check if there is need to scrape more data
+    var hasMore = ids.length < MAX_NUM_APPS_PER_LETTER && $('#selectedgenre li .paginate-more').length > 0;
+
+    if (ids.length > MAX_NUM_APPS_PER_LETTER) {
+      ids = ids.splice(0, MAX_NUM_APPS_PER_LETTER);
+    }
 
     if (hasMore) {
     	pageNum++;
@@ -143,30 +160,45 @@ function getAppId(options, callback) {
   });
 }
 
-function scrapeGenres(genreLevelUrls, progressCallback) {
+/**
+ * Scrape genre app id's
+ **/
+module.exports.scrapeGenres = function(genreLevelUrls, progressCallback) {
   pconsole.header('Scraping itunes website');
+  pconsole.dividor();
 
   return new bluebird(function (resolve, reject) {
     // get all the letter pages of all the genres
     var letterLevelUrls = getLetterLevel(genreLevelUrls);
+    var idGroup = [];
 
     // get all ids in series
     async.eachSeries(letterLevelUrls, function (url, callback) {
-      pconsole.dividor();
-
       getAppId(url, function (err, ids) {
         if (err) {
           callback(err);
           return;
         }
 
-        // wait for progressCallback to execute
-        // and then process the next url
-        progressCallback(ids).then(function() {
+        idGroup = idGroup.concat(ids);
+
+        pconsole.log('Number of ids in group: ' + idGroup.length + '/' + ID_GROUP_MAX_NUM);
+        pconsole.newLine();
+
+        if (idGroup.length >= ID_GROUP_MAX_NUM) {
+          pconsole.dividor();
+
+          // wait for progressCallback to execute
+          // and then process the next url
+          progressCallback(idGroup).then(function() {
+            idGroup = [];
+            callback(null);
+          }, function(err) {
+            callback(err);
+          });
+        } else {
           callback(null);
-        }, function(err) {
-          callback(err);
-        });
+        }
       });
     }, function (err) {
       if (err) {
@@ -182,7 +214,7 @@ function scrapeGenres(genreLevelUrls, progressCallback) {
 /**
  * Gets all genre urls from itunes.apple.com
  **/
-function getAllGenreUrls(cb) {
+module.exports.getAllGenreUrls = function(cb) {
   pconsole.header('Getting all genre urls');
 
   var homeUrl = 'https://itunes.apple.com/us/genre/ios/id36?mt=8';
@@ -198,29 +230,6 @@ function getAllGenreUrls(cb) {
       throw err;
     });
 }
-
-/**
- * Filters url array by a regular expression
- * Return: filtered array
- **/
-function filterUrls(urls, regex) {
-  pconsole.header('Filtering all genre urls');
-
-  var filteredUrls = [];
-  urls.forEach(function (url) {
-    if (url.match(regex)) {
-      filteredUrls.push(url);
-    }
-  });
-
-  return filteredUrls;
-}
-
-module.exports = {
-  getAllGenreUrls: getAllGenreUrls,
-  filterUrls: filterUrls,
-  scrapeGenres: scrapeGenres
-};
 
 
 
