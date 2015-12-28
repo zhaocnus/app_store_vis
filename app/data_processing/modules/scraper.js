@@ -119,7 +119,7 @@ function getLetterLevel(urls) {
 //   <ul class="list paginate">
 //     <li>
 //       <a href="..." class="paginate-more">Next</a>
-function getAppId(options, callback) {
+function getAppIdsByLetter(options, callback) {
 	var pageNum = options.page,
   	baseUrl = options.base,
   	url = baseUrl + '&page=' + pageNum + '#page';
@@ -146,7 +146,7 @@ function getAppId(options, callback) {
 
     if (hasMore) {
     	pageNum++;
-    	getAppId({
+    	getAppIdsByLetter({
     		ids: ids,
     		base: baseUrl,
     		page: pageNum
@@ -160,6 +160,27 @@ function getAppId(options, callback) {
   });
 }
 
+// Gets a genre's popular apps
+function getPopularAppIds(genreUrl, callback) {
+  pconsole.log(genreUrl + ' | popular apps.');
+
+  requestAsync(genreUrl).then(function (html) {
+    var $ = cheerio.load(html);
+    var ids = [];
+
+    $('#selectedcontent li a').each(function () {
+      // example: https://itunes.apple.com/us/app/online-fitting/id600748799?mt=8
+      var href = $(this).attr('href');
+      var id = href.split('/').pop().slice(2, -5);
+      ids.push(id);
+    });
+
+    callback(null, ids);
+  }, function (err) {
+    callback(err);
+  });
+}
+
 /**
  * Scrape genre app id's
  **/
@@ -167,14 +188,31 @@ module.exports.scrapeGenres = function(genreLevelUrls, progressCallback) {
   pconsole.header('Scraping itunes website');
   pconsole.dividor();
 
+  var urls = genreLevelUrls.map(function (url) {
+    return {
+      isLetterPage: false,
+      data: url
+    };
+  });
+
   return new bluebird(function (resolve, reject) {
-    // get all the letter pages of all the genres
-    var letterLevelUrls = getLetterLevel(genreLevelUrls);
+    // get letter pages of all genres
+    var letterLevelUrls = getLetterLevel(genreLevelUrls).map(function (options) {
+      return {
+        isLetterPage: true,
+        data: options
+      };
+    });
     var idGroup = [];
 
+    // concat all urls
+    urls = urls.concat(letterLevelUrls);
+
     // get all ids in series
-    async.eachSeries(letterLevelUrls, function (url, callback) {
-      getAppId(url, function (err, ids) {
+    async.eachSeries(urls, function (url, callback) {
+      var getAppIdsFunc = url.isLetterPage ? getAppIdsByLetter : getPopularAppIds;
+
+      getAppIdsFunc(url.data, function (err, ids) {
         if (err) {
           callback(err);
           return;
