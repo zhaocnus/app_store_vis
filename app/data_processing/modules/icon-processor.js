@@ -61,7 +61,7 @@ module.exports.processIcon = function(img, callback) {
     if (err || res.statusCode !== 200) {
       var errorMsg = 'Error requesting image. id: ' + img.id;
       pconsole.error(errorMsg);
-      return callback(errorMsg);
+      return callback(errorMsg); // process next image, don't break the process
     }
 
     // convert body(buffer) to stream

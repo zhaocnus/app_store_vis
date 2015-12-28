@@ -73,7 +73,7 @@ module.exports.getUnprocessedRows = function(cb) {
 /**
  * Updates app
  */
-module.exports.update = function(data, cb) {
+module.exports.update = function(data, executeQuery) {
   var getValue = function (field) {
     if (field in data) {
       return conn.escape(data[field]);
@@ -104,7 +104,11 @@ module.exports.update = function(data, cb) {
     data.id
   );
 
-  return conn.query(query);
+  if (executeQuery) {
+    return conn.query(query);
+  } else {
+    return query;
+  }
 };
 
 

@@ -9,42 +9,92 @@ var util = require('util');
 var async = require('async');
 var bluebird = require('bluebird');
 
+var conn = require('./database/connection');
 var iconProcessor = require('./modules/icon-processor');
 var pconsole = require('./modules/p-console');
 var appsController = require('./controllers/apps.controller');
 
 // constants
-var NUM_ROWS_PER_GROUP = 10;
-var DELAY = 1000;
+var NUM_ROWS_IN_GROUP = 10;
+var DELAY = 3000;
 
 /**
  * Process all rows
  **/
-function processAllRows(rows, cb) {
-  pconsole.dividor();
+function processRowGroup(group, callback) {
+  pconsole.log('Processing group ' + group.id);
 
-  async.eachLimit(rows, NUM_ROWS_PER_GROUP,
+  var queries = [];
+
+  async.each(group.rows,
     function (row, cb) {
-      // get dominant color and save to DB
+      // get dominant color and get UPDATE query
       iconProcessor.processIcon(row, function (err, value) {
-        pconsole.inline('img saved: ' + row.id + ' color: ' + value.hex, true);
+        if (err) {
+          return cb();
+        }
 
-        appsController.update({
+        var query = appsController.update({
           id: row.id,
           dominant_color: value.hex
-        }).then(function () {
-          cb(null, value);
+        });
+
+        queries.push(query);
+
+        cb(null);
+      });
+    },
+
+    // result handler
+    function (err) {
+      if (err) throw err;
+
+      callback(null, queries);
+    }
+  );
+}
+
+/**
+ * Split all rows into group and then add delay in between each group
+ **/
+function processAll(rows, callback) {
+  var groups = [],
+      i = 0,
+      len = rows.length;
+
+  while (rows.length > 0) {
+    groups.push({
+      id: i,
+      rows: rows.splice(0, NUM_ROWS_IN_GROUP)
+    });
+
+    i += 1;
+  }
+
+  pconsole.log('Processing ' + len + ' rows in ' + groups.length + ' groups');
+
+  async.eachSeries(groups,
+    function (group, cb) {
+      processRowGroup(group, function (err, queries) {
+        if (err) throw err;
+
+        conn.execTransaction(queries).then(function () {
+          pconsole.log('Done', true);
+          pconsole.newLine();
+
+          setTimeout(function () {
+            cb();
+          }, DELAY);
         }, function (err) {
           cb(err);
         });
       });
     },
-
-    // err handler
     function (err) {
-      throw err;
-    }
-  );
+      if (err) throw err;
+
+      callback();
+    });
 }
 
 /**
@@ -53,7 +103,7 @@ function processAllRows(rows, cb) {
 function init() {
   async.waterfall([
     appsController.getUnprocessedRows,
-    processAllRows
+    processAll
   ], function (err) {
     if (err) {
       throw err;
