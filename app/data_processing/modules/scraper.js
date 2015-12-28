@@ -206,8 +206,8 @@ module.exports.scrapeGenres = function(genreLevelUrls, progressCallback) {
     var idGroup = [];
 
     // concat all urls
-    //urls = urls.concat(letterLevelUrls);
-    urls = letterLevelUrls;
+    urls = urls.concat(letterLevelUrls);
+    //urls = letterLevelUrls;
 
     // get all ids in series
     async.eachSeries(urls, function (url, callback) {
