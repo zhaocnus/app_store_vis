@@ -1,0 +1,9 @@
+<div class="main-container">
+  <div class="genres-container">
+    <h2>App Genres</h2>
+    <ul class="unstyled-list">
+      <li ng-repeat="genre in genres" ng-click="onGenreSelected(genre.id)">{{genre.name}}</li>
+    </ul>
+  </div>
+  <div class="genre-summary-container"></div>
+</div>

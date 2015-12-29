@@ -5,6 +5,7 @@
     $urlRouterProvider.otherwise('/');
 
     // root state
+    /*
     $stateProvider.state('root', {
       views: {
         'header': {
@@ -17,6 +18,7 @@
         }
       }
     });
+    */
 
     // use the HTML5 History API
     $locationProvider.html5Mode(true);
@@ -28,10 +30,12 @@
     'ngResource',
 
     // app sub-modules
-    'common.services.data',
-    'common.header',
-    'common.footer',
-    'home',
+    // 'common.services.data',
+    // 'common.header',
+    // 'common.footer',
+    // 'home',
+    'common.services.genresData',
+    'core',
     'templates'
   ])
   .config([
