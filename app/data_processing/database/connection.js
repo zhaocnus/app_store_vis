@@ -9,14 +9,13 @@ var async = require('async');
 var mysql = require('mysql');
 var pool = mysql.createPool(require('../../config/config').db);
 
-
-function query(query) {
+function query (queryStr) {
   return new bluebird(function (resolve) {
     pool.getConnection(function(err, connection) {
       if (err) throw err;
 
       // Use the connection
-      connection.query(query, function(err, result) {
+      connection.query(queryStr, function(err, result) {
         if (err) throw err;
 
         // done with the connection.
@@ -28,7 +27,7 @@ function query(query) {
   });
 }
 
-function execTransaction(queries) {
+function execTransaction (queries) {
   return new bluebird(function (resolve) {
     async.waterfall([
       // get connection
@@ -70,7 +69,7 @@ function execTransaction(queries) {
       function (conn, cb) {
         conn.commit(function(err) {
           if (err) {
-            return connection.rollback(function() {
+            return conn.rollback(function() {
               throw err;
             });
           }

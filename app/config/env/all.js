@@ -11,6 +11,8 @@ module.exports = {
     password : 'root',
     connectionLimit : 10
   },
+
+  // TODO: remove
   icon: {
     tmpPath: './tmp/icons',
     distPath: './public/icons',

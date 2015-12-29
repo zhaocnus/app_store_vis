@@ -247,7 +247,7 @@ module.exports.scrapeAppIds = function(genreLevelUrls, callback) {
   }, function (err) {
     callback(err);
   });
-}
+};
 
 /**
  * Gets all genre urls from itunes.apple.com
@@ -270,7 +270,7 @@ module.exports.getAllGenreUrls = function(cb) {
     .catch(function (err) {
       throw err;
     });
-}
+};
 
 
 

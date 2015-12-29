@@ -137,25 +137,19 @@ gulp.task('nodemon', function (done) {
 });
 
 //lint files
-/*
 gulp.task('jshint', function() {
   return gulp.src(config.jshint)
-    .pipe(reload({
-      stream: true,
-      once: true
-    }))
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'));
 });
-*/
 
 // Default task(s).
-gulp.task('serve', [/*'jshint', */ 'nodemon', 'watch']);
+gulp.task('serve', ['jshint', 'nodemon', 'watch']);
 
 //run the server after having built generated files, and watch for changes
 gulp.task('watch', ['build'], function() {
   gulp.watch(config.scss, ['sass']);
-  //gulp.watch(config.jshint, ['jshint']);
+  gulp.watch(config.jshint, ['jshint']);
   gulp.watch(config.tpl, ['templates']);
 
   // var server = $.livereload();

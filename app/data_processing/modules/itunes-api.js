@@ -94,4 +94,4 @@ module.exports.scrapeAllAppDetails = function(ids, callback) {
     pconsole.log('Complete ' + idGroup.length + ' groups\n');
     callback();
   });
-}
+};

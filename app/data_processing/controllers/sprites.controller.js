@@ -36,7 +36,7 @@ module.exports.addSprite = function() {
         });
       }, function (err) {
         throw err;
-      })
+      });
   });
 };
 

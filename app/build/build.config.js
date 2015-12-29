@@ -9,10 +9,14 @@ module.exports = {
   mainScss: 'client/src/scss/main.scss',
   scss: 'client/src/scss/**/*.scss',
   jshint: [
-    'client/src/**/*.js',
+    'build/build.config.js',
+    //'client/src/**/*.js',
     '!client/bower_components/**/*.js',
     'client/test/unit/**/*.js',
-    'client/test/e2e/**/*.js'
+    'client/test/e2e/**/*.js',
+
+    // data processing script
+    'data_processing/**/*.js'
   ],
   index: 'client/index.html',
   assets: 'client/assets/**',
