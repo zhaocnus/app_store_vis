@@ -144,24 +144,14 @@ gulp.task('jshint', function() {
 });
 
 // Default task(s).
-gulp.task('serve', ['jshint', 'nodemon', 'watch']);
+gulp.task('serve', function (done) {
+  process.env.NODE_ENV = 'development';
+  runSequence('jshint', 'build', ['nodemon', 'watch'], done);
+});
 
 //run the server after having built generated files, and watch for changes
 gulp.task('watch', ['build'], function() {
   gulp.watch(config.scss, ['sass']);
   gulp.watch(config.jshint, ['jshint']);
   gulp.watch(config.tpl, ['templates']);
-
-  // var server = $.livereload();
-  // gulp.watch([
-  //   'gulpfile.js',
-  //   'server.js',
-  //   'config/**/*.js',
-  //   'build/build.config.js',
-  //   'server/**/*.js',
-  //   'client/src/**/*.{js,scss,html}'
-  // ])
-  //   .on('change', function(file) {
-  //     server.changed(file.path);
-  //   });
 });

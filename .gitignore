@@ -3,7 +3,7 @@
 .sass-cache/
 npm-debug.log
 node_modules/
-client/bower_components
+bower_components
 app/tests/coverage/
 .bower-*/
 .idea/
