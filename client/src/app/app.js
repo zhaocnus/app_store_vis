@@ -34,7 +34,7 @@
     // 'common.header',
     // 'common.footer',
     // 'home',
-    'common.services.genresData',
+    'common.services.data',
     'core',
     'templates'
   ])

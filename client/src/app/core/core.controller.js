@@ -5,20 +5,20 @@
    * @name  HomeCtrl
    * @description Controller
    */
-  function coreCtrl($scope, GenresDataService) {
-    GenresDataService.list().then(function (genres) {
-      $scope.genres = genres;
-    });
+  function coreCtrl($scope, DataService) {
+    $scope.genres = DataService.genres.query();
 
     $scope.onGenreSelected = function(genreId) {
-      console.log(genreId);
+      DataService.genres.get({genreId: genreId}, function (res) {
+        console.log(res.summary);
+      });
     };
   }
 
   angular.module('core')
     .controller('CoreCtrl', [
       '$scope',
-      'GenresDataService',
+      'DataService',
       coreCtrl
     ]);
 })();
