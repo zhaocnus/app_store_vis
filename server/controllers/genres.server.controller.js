@@ -28,9 +28,7 @@ module.exports.readGenreSummary = function(req, res) {
   );
 
   conn.query(query).then(function (result) {
-    var data = {
-      summary: result
-    };
+    var data = { summary: result };
     res.status(200).send(data);
   }, function () {
     res.status(404).send('No genre with that ID has been found.');

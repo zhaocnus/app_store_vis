@@ -6,7 +6,11 @@
    * @description Controller
    */
   function summaryCtrl($scope, $stateParams, DataService) {
-    console.log($stateParams);
+    $scope.genreId = $stateParams.genreId;
+
+    DataService.genres.get({genreId: $scope.genreId}, function (res) {
+      console.log(res);
+    });
   }
 
   angular.module('summary')

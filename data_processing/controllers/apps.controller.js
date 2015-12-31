@@ -59,13 +59,31 @@ module.exports.getRowsWithoutDetails = function(cb) {
 };
 
 /**
- * Gets un-processed rows using offset and limit
+ * Gets rows without dominant colors
  */
 module.exports.getRowsWithoutDominantColors = function(cb) {
   var query =
     'SELECT id, artwork_url60 AS url ' +
     'FROM `apps` ' +
     'WHERE dominant_color IS NULL';
+
+  conn.query(query)
+    .then(function (data) {
+      cb(null, data);
+    }, function (err) {
+      cb(err);
+    });
+};
+
+/**
+ * Gets rows without web save colors
+ */
+module.exports.getRowsWithoutWebSaveColors = function(cb) {
+  var query =
+    'SELECT id, dominant_color ' +
+    'FROM `apps` ' +
+    'WHERE web_save_color IS NULL ' +
+    'AND dominant_color IS NOT NULL';
 
   conn.query(query)
     .then(function (data) {
@@ -91,22 +109,25 @@ module.exports.update = function(data, executeQuery) {
       artwork_url60 = getValue('artwork_url60'),
       track_view_url = getValue('track_view_url'),
       genre_id = getValue('genre_id'),
-      dominant_color = getValue('dominant_color');
+      dominant_color = getValue('dominant_color'),
+      web_save_color = getValue('web_save_color');
 
   var query = util.format(
     'UPDATE `apps` SET ' +
-    'track_name = %s,' +
-    'artwork_url60 = %s,' +
-    'track_view_url = %s,' +
-    'genre_id = %s,' +
-    'dominant_color = %s ' +
+    'track_name = %s, ' +
+    'artwork_url60 = %s, ' +
+    'track_view_url = %s, ' +
+    'genre_id = %s, ' +
+    'dominant_color = %s, ' +
+    'web_save_color = %s ' +
     'WHERE id = %d',
     track_name,
     artwork_url60,
     track_view_url,
     genre_id.toString(),
     dominant_color,
-    data.id
+    web_save_color,
+    parseInt(data.id, 10)
   );
 
   if (executeQuery) {

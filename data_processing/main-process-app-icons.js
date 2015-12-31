@@ -7,7 +7,6 @@
 // module dependencies
 var util = require('util');
 var async = require('async');
-var bluebird = require('bluebird');
 
 var conn = require('./database/connection');
 var iconProcessor = require('./modules/icon-processor');
@@ -92,8 +91,6 @@ function processAll(rows, callback) {
     },
     function (err) {
       if (err) throw err;
-
-      callback();
     });
 }
 
