@@ -36,6 +36,7 @@
     // 'home',
     'common.services.data',
     'core',
+    'summary',
     'templates'
   ])
   .config([

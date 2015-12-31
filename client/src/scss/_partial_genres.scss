@@ -1,0 +1,41 @@
+.genres-container {
+  background-color: $purple;
+  padding-bottom: $spacing-m;
+  width: 230px;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  // title
+  .genre-title {
+    padding: $spacing-xs $spacing-m;
+    color: $gray-lightest;
+    background-color: $purple-dark;
+  }
+
+  ul.genre-list {
+    padding-right: $spacing-m;
+    margin: 0;
+  }
+
+  // list
+  ul.genre-list li {
+    padding: $spacing-xs $spacing-m;
+    color: $gray-lighter;
+    cursor: pointer;
+    border-radius: 0 5px 5px 0;
+    transition: background-color 0.2s;
+
+    &:hover {
+      color: $gray-lightest;
+      background-color: $purple-darker;
+    }
+
+    &.selected {
+      color: $gray-lightest;
+      background-color: $purple-light;
+    }
+  }
+
+}

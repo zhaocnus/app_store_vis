@@ -1,10 +1,15 @@
-<div class="main-container">
-  <div class="genres-container">
-    <h2>App Genres</h2>
-    <ul class="list-unstyled">
-      <li ng-repeat="genre in genres"
-        ng-click="onGenreSelected(genre.id)">{{genre.name}}</li>
-    </ul>
-  </div>
-  <div class="genre-summary-container"></div>
+<div class="main-container clearfix">
+
+    <div class="genres-container">
+      <div class="genre-title"><h4>SELECT A GENRE</h4></div>
+      <ul class="list-unstyled genre-list">
+        <li ng-repeat="genre in genres"
+          ng-class="{'selected': genre.id === selectedId}"
+          ng-click="genreSelected(genre.id)"
+          ui-sref="root.summary({genreId:genre.id})">{{genre.name}}
+        </li>
+      </ul>
+    </div>
+
+    <div ui-view="summary" autoscroll="true"></div>
 </div>
