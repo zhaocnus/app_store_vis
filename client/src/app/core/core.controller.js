@@ -10,6 +10,13 @@
 
     $scope.genreSelected = function (genreId) {
       $scope.selectedId = genreId;
+      $scope.isMobileListVisible = false;
+    };
+
+    // collapse button logic for mobile only
+    $scope.isMobileListVisible = false;
+    $scope.toggleMobileList = function() {
+      $scope.isMobileListVisible = !$scope.isMobileListVisible;
     };
   }
 

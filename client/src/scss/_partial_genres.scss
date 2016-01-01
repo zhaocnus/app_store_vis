@@ -1,26 +1,59 @@
 .genres-container {
   background-color: $purple;
-  padding-bottom: $spacing-m;
-  width: $genre-container-width;
-
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
 
-  // title
-  .genre-title {
-    padding: $spacing-xs $spacing-m;
-    color: $gray-lightest;
-    background-color: $purple-dark;
+  .wide-screen {
+    display: none;
   }
 
-  ul.genre-list {
-    padding-right: $spacing-m;
+  @include breakpoint(sm) {
+    width: $genre-container-width;
+    .narrow-screen { display: none; }
+    .wide-screen { display: block; }
+  }
+}
+
+.genres-container .genres-title-container {
+  // block scope variables
+  $title-height: 50px;
+  $title-line-height: 47px;
+
+  height: $title-height;
+  padding-left: $spacing-s;
+  position: relative;
+  color: $white;
+
+  .collapse-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: $title-height;
+    line-height: $title-line-height;
+    vertical-align: middle;
+    text-align: right;
+    padding-right: 20px;
+    font-size: 20px;
+  }
+
+  .title {
+    padding: 0;
     margin: 0;
+    height: $title-height;
+    line-height: $title-line-height;
+    vertical-align: middle;
   }
+}
 
-  // list
-  ul.genre-list li {
+.genres-container ul.genre-list {
+  padding: $spacing-s $spacing-m $spacing-s 0;
+  margin: 0;
+
+  // list item
+  li {
     padding: $spacing-xs $spacing-m;
     color: $gray-lighter;
     cursor: pointer;
@@ -37,5 +70,4 @@
       background-color: $purple-light;
     }
   }
-
 }
