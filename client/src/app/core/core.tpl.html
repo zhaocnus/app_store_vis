@@ -32,7 +32,7 @@
     <ul class="list-unstyled genre-list wide-screen">
       <li ng-repeat="genre in genres"
         ng-click="genreSelected(genre.id)"
-        ng-class="{'selected': genre.id === selectedId}"
+        ui-sref-active="selected"
         ui-sref="root.summary({genreId:genre.id})">{{genre.name}}</li>
     </ul>
   </div>
