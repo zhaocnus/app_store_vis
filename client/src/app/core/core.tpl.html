@@ -2,18 +2,22 @@
   <!-- genres container for narrow screen (mobile) -->
   <div class="genres-container">
 
-    <!-- title for narrow screen(mobile) and wide screen(tablet and desktop)-->
-    <div class="genres-title-container">
+    <!-- title for narrow screen(mobile) -->
+    <div class="genres-title-container narrow-screen">
       <h5 class="title narrow-screen">CLICK TO SELECT A GENRE</h5>
-      <h4 class="title wide-screen">SELECT A GENRE</h4>
 
-      <!-- collapse button for mobile -->
+      <!-- collapse button -->
       <div class="collapse-btn narrow-screen" ng-click="toggleMobileList()">
         <span class="glyphicon glyphicon-menu-hamburger"
           ng-class="{'glyphicon-menu-hamburger': !isMobileListVisible,
             'glyphicon-remove': isMobileListVisible}">
         </span>
       </div>
+    </div>
+
+    <!-- title for narrow wide screen(tablet and desktop)-->
+    <div class="genres-title-container wide-screen">
+      <h4 class="title">SELECT A GENRE</h4>
     </div>
 
     <!-- list for narrow screen -->
