@@ -5,6 +5,7 @@
  */
 var util = require('util');
 var conn = require('../../data_processing/database/connection');
+var _ = require('lodash');
 
 // List all genres
 module.exports.list = function(req, res) {
@@ -19,17 +20,52 @@ module.exports.list = function(req, res) {
 
 // Read genre summary
 module.exports.readGenreSummary = function(req, res) {
+  // TODO: save this result in a json or in memory key/value DB
   var query = util.format(
     'SELECT id, track_name AS name, artwork_url60 AS icon_url, ' +
-      'track_view_url AS app_url, dominant_color AS color ' +
+      'track_view_url AS app_url, web_save_color ' +
     'FROM `apps` ' +
-    'WHERE genre_id = %d',
+    'WHERE genre_id = %d ' +
+    'AND web_save_color IS NOT NULL',
     req.genre.id
   );
 
-  conn.query(query).then(function (result) {
-    var data = { summary: result };
-    res.status(200).send(data);
+  conn.query(query).then(function (rows) {
+    // Use js object to group rows by web_save_color
+    var dataObj = {};
+    var max = 1;
+    rows.forEach(function (row) {
+      var color = row.web_save_color;
+      if (dataObj.hasOwnProperty(color)) {
+        dataObj[color].push(row);
+      } else {
+        dataObj[color] = [row];
+      }
+
+      var len = dataObj[color].length;
+      if (len > max) {
+        max = len;
+      }
+    });
+
+    // convert group object to array
+    var dataArr = [];
+    _.forOwn(dataObj, function(value, key) {
+      // value is an array containing all the icons
+      // key is the web_save_color
+      dataArr.push({
+        len: value.length,
+        percent: Math.round(100 * value.length / max) + '%',
+        apps: value,
+        web_save_color: '#' + key
+      });
+    });
+
+    // respond to c
+    res.status(200).send({
+      genre: req.genre,
+      groups: dataArr
+    });
   }, function () {
     res.status(404).send('No genre with that ID has been found.');
   });

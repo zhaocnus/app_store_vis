@@ -1,3 +1,22 @@
 .summary-container {
   margin-left: $genre-container-width;
+  background-image: url(/assets/images/summary-bg.jpg);
+}
+
+.summary-container .summary-list {
+  padding-right: $spacing-m;
+
+  .bar {
+    height: 30px;
+  }
+
+
+  .group-app-item {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
 }

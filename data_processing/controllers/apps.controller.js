@@ -78,12 +78,11 @@ module.exports.getRowsWithoutDominantColors = function(cb) {
 /**
  * Gets rows without web save colors
  */
-module.exports.getRowsWithoutWebSaveColors = function(cb) {
+module.exports.getRowsForWebSaveColors = function(cb) {
   var query =
     'SELECT id, dominant_color ' +
     'FROM `apps` ' +
-    'WHERE web_save_color IS NULL ' +
-    'AND dominant_color IS NOT NULL';
+    'WHERE dominant_color IS NOT NULL';
 
   conn.query(query)
     .then(function (data) {

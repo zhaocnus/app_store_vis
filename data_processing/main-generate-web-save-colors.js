@@ -11,6 +11,11 @@ var conn = require('./database/connection');
 var pconsole = require('./modules/p-console');
 var appsController = require('./controllers/apps.controller');
 
+function pad(str) {
+  return (str.length === 1) ?
+    '0' + str : str;
+}
+
 /**
  * process all rows
  **/
@@ -22,9 +27,9 @@ function processAll(rows, callback) {
         g = parseInt(color.substring(2, 4), 16),
         b = parseInt(color.substring(4, 6), 16);
 
-    var hex = (Math.round(r/51) * 51).toString(16) +
-      (Math.round(g/51) * 51).toString(16) +
-      (Math.round(b/51) * 51).toString(16);
+    var hex = pad( (Math.round(r/51) * 51).toString(16) ) +
+      pad((Math.round(g/51) * 51).toString(16) )+
+      pad((Math.round(b/51) * 51).toString(16) );
 
     var query = appsController.update({
       id: row.id,
@@ -32,8 +37,6 @@ function processAll(rows, callback) {
     }, false);
 
     queries.push(query);
-
-    console.log(query);
   });
 
   conn.execTransaction(queries).then(function () {
@@ -41,7 +44,7 @@ function processAll(rows, callback) {
     callback();
   }, function (err) {
     callback(err);
-  })
+  });
 }
 
 /**
@@ -51,7 +54,7 @@ function init() {
   pconsole.header('Generating web save colors.');
 
   async.waterfall([
-    appsController.getRowsWithoutWebSaveColors,
+    appsController.getRowsForWebSaveColors,
     processAll
   ], function (err) {
     if (err) {
