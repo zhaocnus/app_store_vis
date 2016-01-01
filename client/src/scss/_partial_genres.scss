@@ -18,8 +18,8 @@
 
 .genres-container .genres-title-container {
   // block scope variables
-  $title-height: 50px;
-  $title-line-height: 47px;
+  $title-height: $genre-title-height;
+  $title-line-height: $genre-title-height - 3px;
 
   height: $title-height;
   padding-left: $spacing-s;
@@ -58,15 +58,15 @@
     line-height: $title-line-height;
     vertical-align: middle;
   }
-
-  & + ul.genre-list.narrow-screen {
-    margin-top: $title-height;
-  }
 }
 
 .genres-container ul.genre-list {
   padding: $spacing-s $spacing-m $spacing-s 0;
   margin: 0;
+
+  &.narrow-screen {
+    margin-top: $genre-title-height;
+  }
 
   // list item responsive styles
   &.narrow-screen li {
