@@ -1,16 +1,24 @@
 .genres-container {
   background-color: $purple;
-  position: absolute;
+
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
+  min-height: $genre-title-height;
+  max-height: 100%;
+  overflow-y: auto;
+  z-index: $z-index-genre-list;
 
   .wide-screen {
     display: none;
   }
 
   @include breakpoint(sm) {
+    position: absolute;
     width: $genre-container-width;
+    max-height: none;
+
     .narrow-screen { display: none; }
     .wide-screen { display: block; }
   }
@@ -24,14 +32,18 @@
   height: $title-height;
   padding-left: $spacing-s;
   color: $white;
+  background-color: $purple-dark;
 
   &.narrow-screen {
     position: fixed;
     width: 100%;
     top: 0;
     left: 0;
-    background-color: $purple;
-    z-index: $mobile-genre-title;
+    z-index: $z-index-genre-title;
+  }
+
+  &.wide-screen {
+    position: relative;
   }
 
   &.narrow-screen .collapse-btn {
@@ -45,10 +57,6 @@
     text-align: right;
     padding-right: 20px;
     font-size: 20px;
-  }
-
-  &.wide-screen {
-    position: relative;
   }
 
   .title {

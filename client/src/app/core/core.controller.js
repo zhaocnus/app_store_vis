@@ -5,7 +5,7 @@
    * @name  HomeCtrl
    * @description Controller
    */
-  function coreCtrl($scope, $state, DataService) {
+  function coreCtrl($scope, $state, $stateParams, DataService) {
     $scope.genres = DataService.genres.query();
 
     $scope.genreSelected = function (genreId) {
@@ -18,12 +18,15 @@
     $scope.toggleMobileList = function() {
       $scope.isMobileListVisible = !$scope.isMobileListVisible;
     };
+
+    console.log($stateParams);
   }
 
   angular.module('core')
     .controller('CoreCtrl', [
       '$scope',
       '$state',
+      '$stateParams',
       'DataService',
       coreCtrl
     ]);

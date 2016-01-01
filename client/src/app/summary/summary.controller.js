@@ -20,8 +20,6 @@
       });
       $scope.groupList = res.groups;
 
-      console.log($scope.groupList);
-
       // set default order
       $scope.curGroupOrder = '-len';
     });
