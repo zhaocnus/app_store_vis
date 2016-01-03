@@ -1,6 +1,6 @@
 <div class="summary-container">
   <!-- title -->
-  <h1>Summary for {{genreName}}</h1>
+  <h3>Summary for {{genreName}}</h3>
 
   <!-- summary list -->
   <ol class="summary-list list-unstyled">
@@ -9,9 +9,10 @@
       <div class="bar"
         ng-style="{
           'width': group.percent,
-          'background-color': group.web_save_color}"></div>
+          'background-color': group.web_save_color
+        }"></div>
 
-      <p class="group-text">{{group.web_save_color}}</p>
+      <p class="group-text">{{group.web_save_color}} {{group.percent}} {{group.len}}</p>
 
       <!--
       <p class="group-text">{{group.len}}</p>

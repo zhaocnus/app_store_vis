@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" ng-controller="AppCtrl">
 <head>
   <base href="/">
 	<title>App Store Icon Dominant Colors</title>
@@ -45,11 +45,11 @@
       <!-- main header -->
       <header class="main-header">
         <div class="container-fluid">
-          <h4 class="header-title">App Store Icon Visualization</h4>
+          <h4 class="header-title"><a ui-sref="root">App Store Icon Visualization</a></h4>
         </div>
       </header>
 
-      <div ui-view="summary" class="summary-container"></div>
+      <div ui-view="summary"></div>
     </section>
   </div>
 
@@ -77,6 +77,7 @@
 
   <script type="text/javascript" src="src/app/summary/summary.js"></script>
   <script type="text/javascript" src="src/app/summary/summary.controller.js"></script>
+  <script type="text/javascript" src="src/app/summary/summary-result.controller.js"></script>
 
   <script type="text/javascript" src="tmp/templates.js"></script>
   <!-- endbuild -->

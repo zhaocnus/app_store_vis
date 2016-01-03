@@ -9,7 +9,7 @@
     $stateProvider.state('root.summary', {
       url: 'summary/{genreId}',
       templateUrl: 'src/app/summary/summary-result.tpl.html',
-      controller: 'SummaryCtrl'
+      controller: 'SummaryResultCtrl'
     });
   }
 

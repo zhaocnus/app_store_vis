@@ -12,6 +12,7 @@
         },
         'summary': {
           templateUrl: 'src/app/summary/summary.tpl.html',
+          controller: 'SummaryCtrl'
         }
       }
     });
@@ -36,7 +37,19 @@
     '$urlRouterProvider',
     '$locationProvider',
     config
-  ]);
+  ])
+  .controller('AppCtrl', [
+    '$rootScope',
+    '$document',
+    function ($rootScope, $document) {
+      console.log('success');
+
+      // scroll to page top on state change success
+      $rootScope.$on('$stateChangeSuccess', function() {
+        $document[0].body.scrollTop = $document[0].documentElement.scrollTop = 0;
+      });
+    }
+  ])
 
   angular.element(document).ready(function() {
     angular.bootstrap(document, ['app']);
