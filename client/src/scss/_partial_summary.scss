@@ -3,21 +3,123 @@
 }
 
 .summary-container .summary-list {
-  padding-right: $spacing-m;
 
-  .bar {
-    height: 20px;
-    border-radius: 5px;
-    border: 1px $gray-lighter solid;
+}
+
+.summary-container .summary-list .summary-list-item {
+  $item-height: 40px;
+  min-height: $item-height;
+  margin-top: $spacing-xl;
+
+  .item-info-wrapper {
+    margin: 0;
+    background-color: $gray;
+    height: $item-height;
+    line-height: $item-height;
+    vertical-align: middle;
+    color: $gray-lighter;
+    white-space: nowrap;
+    position: relative;
+    cursor: pointer;
+
+    margin-bottom: $spacing-s;
   }
 
+  .item-info-wrapper .item-info {
+    display: inline-block;
+    padding-left: $spacing-s;
+    height: $item-height;
+  }
 
-  .group-app-item {
-    width: 32px;
-    height: 32px;
+  .item-info-wrapper .item-info.percent {
+    width: 50px;
+    border-right: 2px solid $gray-lighter;
+  }
+
+  .item-info-wrapper .item-info.more {
+    width: $item-height + $spacing-xs;
+    border-left: $spacing-xs solid $white;
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: center;
+    padding: 0;
+  }
+  .item-info-wrapper .item-info.more::before {
+    content: "+";
+    font-size: 24px;
+  }
+  .item-info-wrapper.is-apps-visible .item-info.more::before {
+    content: "-";
+  }
+
+  .bar {
+    height: $item-height;
+    border-radius: 0 $item-height/2 $item-height/2 0;
+
+    $border-style: 2px $gray-lighter solid;
+    border-top: $border-style;
+    border-right: $border-style;
+    border-bottom: $border-style;
+
+    margin-bottom: $spacing-s;
+  }
+
+  // hover state
+  .item-info-wrapper:hover {
+    background-color: $gray-dark;
+
+    .item-info.more {
+      width: 100%;
+      background-color: $gray-dark;
+      border: none;
+    }
+
+    .item-info.more::before {
+      content: "CLICK TO SEE APP ICONS";
+      font-size: 12px;
+    }
+
+    &+.bar {
+      $border-style: 2px $gray-dark solid;
+      border-top: $border-style;
+      border-right: $border-style;
+      border-bottom: $border-style;
+    }
+  }
+
+  .item-info-wrapper.is-apps-visible:hover {
+    .item-info.more::before {
+      content: "CLICK TO CLOSE APP ICONS";
+    }
+  }
+
+  // item-app-list
+  .item-app-list {}
+
+  .item-app-list .item-app {
+    width: $item-height;
+    height: $item-height;
     display: inline-block;
     background-repeat: no-repeat;
     background-size: cover;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-right: $spacing-xs;
   }
 
+  @include breakpoint(sm) {
+    $item-info-wrapper-width: 200px;
+
+    position: relative;
+    padding-left: $item-info-wrapper-width + $spacing-m;
+
+    .item-info-wrapper {
+      width: $item-info-wrapper-width;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+  }
 }

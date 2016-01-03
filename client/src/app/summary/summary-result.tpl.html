@@ -1,18 +1,47 @@
-<div class="summary-container">
+<div class="container-fluid">
   <!-- title -->
-  <h3>Summary for {{genreName}}</h3>
+  <h4>Summary for {{genreName}} using {{totalNumApps}} sample apps</h4>
 
   <!-- summary list -->
   <ol class="summary-list list-unstyled">
-    <li class="summary-list-item"
-      ng-repeat="group in groupList | orderBy : curGroupOrder">
+    <li class="summary-list-item" ng-repeat="group in groupList | orderBy : curGroupOrder">
+      <p class="item-info-wrapper"
+        ng-class="{'is-apps-visible': group.lazyLoadApps}"
+        ng-click="toggleGroupApps(group)">
+        <span class="item-info percent">{{group.percent}}</span>
+        <span class="item-info color">{{group.web_save_color}}</span>
+        <span class="item-info more"></span>
+      </p>
+
       <div class="bar"
         ng-style="{
-          'width': group.percent,
+          'width': group.barWidth,
+          'background-color': group.web_save_color
+        }">
+      </div>
+
+      <ul class="item-app-list list-unstyled">
+        <li class="item-app"
+          ng-repeat="app in group.lazyLoadApps"
+          ng-style="{
+            'background-image': app.icon_url,
+            'background-color': group.web_save_color
+          }">
+        </li>
+      </ul>
+
+
+      <!-- <div class="bar"
+        ng-style="{
+          'width': group.barWidth,
           'background-color': group.web_save_color
         }"></div>
 
-      <p class="group-text">{{group.web_save_color}} {{group.percent}} {{group.len}}</p>
+      <p class="group-text">
+        <span>{{group.web_save_color}}</span>
+        <span>{{group.percent}}</span>
+        <span>{{group.len}} app(s)</span>
+      </p> -->
 
       <!--
       <p class="group-text">{{group.len}}</p>
@@ -27,5 +56,5 @@
 
     </li>
   </ol>
-
 </div>
+

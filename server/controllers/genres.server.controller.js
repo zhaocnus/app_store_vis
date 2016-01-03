@@ -34,6 +34,7 @@ module.exports.readGenreSummary = function(req, res) {
     // Use js object to group rows by web_save_color
     var dataObj = {};
     var max = 1;
+    var total = rows.length;
     rows.forEach(function (row) {
       var color = row.web_save_color;
       if (dataObj.hasOwnProperty(color)) {
@@ -55,16 +56,18 @@ module.exports.readGenreSummary = function(req, res) {
       // key is the web_save_color
       dataArr.push({
         len: value.length,
-        percent: Math.round(100 * value.length / max) + '%',
+        percent: Math.round(100 * value.length / total) + '%',
+        barWidth: Math.round(100 * value.length / max) + '%',
         apps: value,
         web_save_color: '#' + key
       });
     });
 
-    // respond to c
+    // respond to client
     res.status(200).send({
       genre: req.genre,
-      groups: dataArr
+      groups: dataArr,
+      total: total
     });
   }, function () {
     res.status(404).send('No genre with that ID has been found.');
