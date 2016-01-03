@@ -30,7 +30,6 @@
 
   height: $title-height;
   padding-left: $spacing-m;
-  color: $white;
   background-color: $purple-dark;
 
   &.narrow-screen {
@@ -59,6 +58,7 @@
   }
 
   .title {
+    color: $gray-lighter;
     padding: 0;
     margin: 0;
     height: $title-height;

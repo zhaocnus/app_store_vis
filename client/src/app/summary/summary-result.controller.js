@@ -24,6 +24,12 @@
       // toggle group app icons on click
       $scope.toggleGroupApps = function (group) {
         group.lazyLoadApps = group.lazyLoadApps ? null : group.apps;
+        group.selectedApp = null;
+      };
+
+      // select app to show its detail
+      $scope.selectApp = function (app, group) {
+        group.selectedApp = app;
       };
     });
   }

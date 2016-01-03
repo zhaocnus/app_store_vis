@@ -9,12 +9,22 @@ body {
 
 body {
   @include font-regular();
+  color: $gray-dark;
 }
 
 h1, h2, h3, h4, h5, h6 {
   @include font-bold();
+  color: $gray-dark;
 }
 
 p {
   @include font-regular();
+  color: $gray-dark;
+}
+
+a, a:visited {
+  color: $gray-dark;
+}
+a:hover, a:focus {
+  color: $black;
 }

@@ -11,6 +11,7 @@
   min-height: $item-height;
   margin-top: $spacing-xl;
 
+  // item-info-wrapper
   .item-info-wrapper {
     margin: 0;
     background-color: $gray;
@@ -53,6 +54,7 @@
     content: "-";
   }
 
+  // bar
   .bar {
     height: $item-height;
     border-radius: 0 $item-height/2 $item-height/2 0;
@@ -61,8 +63,6 @@
     border-top: $border-style;
     border-right: $border-style;
     border-bottom: $border-style;
-
-    margin-bottom: $spacing-s;
   }
 
   // hover state
@@ -87,7 +87,6 @@
       border-bottom: $border-style;
     }
   }
-
   .item-info-wrapper.is-apps-visible:hover {
     .item-info.more::before {
       content: "CLICK TO CLOSE APP ICONS";
@@ -95,7 +94,11 @@
   }
 
   // item-app-list
-  .item-app-list {}
+  .item-app-list {
+    margin-top: $spacing-s;
+    line-height: 60px;
+    vertical-align: top;
+  }
 
   .item-app-list .item-app {
     width: $item-height;
@@ -106,6 +109,25 @@
     border-radius: 8px;
     overflow: hidden;
     margin-right: $spacing-xs;
+    cursor: pointer;
+    background-clip: padding-box;
+
+
+    &:hover, &.selected {
+      position: relative;
+      overflow: visible;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -10px;
+        height: 6px;
+        width: 100%;
+        background-color: $gray-dark;
+        border-radius: 3px;
+      }
+    }
   }
 
   @include breakpoint(sm) {
@@ -119,6 +141,14 @@
       position: absolute;
       left: 0;
       top: 0;
+    }
+
+    .app-detail-wrapper {
+      width: $item-info-wrapper-width;
+      position: absolute;
+      left: 0;
+      padding: 0 $spacing-xs;
+      top: $item-height;
     }
 
   }
