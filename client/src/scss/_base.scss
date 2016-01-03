@@ -3,14 +3,12 @@
 
 html,
 body {
-  @include font-regular();
   width: 100%;
+  height: 100%;
 }
 
 body {
-  @include breakpoint(sm) {
-    border-left: $genre-container-width solid $purple;
-  }
+  @include font-regular();
 }
 
 h1, h2, h3, h4, h5, h6 {

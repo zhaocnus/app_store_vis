@@ -19,7 +19,7 @@
 	<link href="apple-touch-icon.png" rel="apple-touch-icon">
 
 	<!--fonts-->
-	<link href='https://fonts.googleapis.com/css?family=Roboto:400,700,100' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
 
 	<!-- build:css assets/css/main.min.css -->
   <link rel="stylesheet" type="text/css" href="bower_components/bootstrap-css-only/css/bootstrap.min.css" />
@@ -33,10 +33,32 @@
 </head>
 
 <body class="ng-cloak">
-  <!-- <header ui-view="header"></header> -->
-  <!--<div ui-view="main" autoscroll="true"></div>-->
-  <!-- <footer ui-view="footer"></footer> -->
-  <div ui-view></div>
+  <!-- main page wrapper -->
+  <div class="main-page-wrapper">
+    <!-- left inner container -->
+    <section class="left-inner-wrapper">
+      <div ui-view="menu" class="menu-container"></div>
+    </section>
+
+    <!-- right inner container -->
+    <section class="right-inner-wrapper">
+      <!-- main header -->
+      <header class="main-header">
+        <div class="container-fluid">
+          <h4 class="header-title">App Store Icon Visualization</h4>
+        </div>
+      </header>
+
+      <div ui-view="summary" class="summary-container"></div>
+    </section>
+  </div>
+
+  <!-- main footer -->
+  <footer class="main-footer">
+    <div class="container-fluid">
+      <p>Made with <span class="glyphicon glyphicon-heart"></span> by Xiaoyang Zhao.&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/zhaocnus/app_store_vis">GitHub</a></p>
+    </div>
+  </footer>
 
 	<!-- build:js assets/js/main.min.js -->
 	<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
@@ -45,8 +67,14 @@
 
   <script type="text/javascript" src="src/app/app.js"></script>
   <script type="text/javascript" src="src/common/services/data.service.js"></script>
+  <!--
   <script type="text/javascript" src="src/app/core/core.js"></script>
   <script type="text/javascript" src="src/app/core/core.controller.js"></script>
+  -->
+
+  <script type="text/javascript" src="src/app/menu/menu.js"></script>
+  <script type="text/javascript" src="src/app/menu/menu-genres.controller.js"></script>
+
   <script type="text/javascript" src="src/app/summary/summary.js"></script>
   <script type="text/javascript" src="src/app/summary/summary.controller.js"></script>
 

@@ -8,12 +8,8 @@
   function config($stateProvider) {
     $stateProvider.state('root.summary', {
       url: 'summary/{genreId}',
-      views: {
-        'summary': {
-          templateUrl: 'src/app/summary/summary.tpl.html',
-          controller: 'SummaryCtrl'
-        }
-      }
+      templateUrl: 'src/app/summary/summary-result.tpl.html',
+      controller: 'SummaryCtrl'
     });
   }
 

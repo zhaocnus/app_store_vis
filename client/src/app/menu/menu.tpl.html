@@ -1,0 +1,40 @@
+<div class="menu-container">
+
+  <!-- genres container -->
+  <div class="genres-container" ng-controller="GenresCtrl">
+    <!-- title for narrow screen(mobile) -->
+    <div class="genres-title-container narrow-screen">
+      <h5 class="title narrow-screen">CLICK TO SELECT A GENRE</h5>
+
+      <!-- collapse button -->
+      <div class="collapse-btn narrow-screen" ng-click="toggleMobileList()">
+        <span class="glyphicon glyphicon-menu-hamburger"
+          ng-class="{'glyphicon-menu-hamburger': !isMobileListVisible,
+            'glyphicon-remove': isMobileListVisible}">
+        </span>
+      </div>
+    </div>
+
+    <!-- title for narrow wide screen(tablet and desktop)-->
+    <div class="genres-title-container wide-screen">
+      <h4 class="title">SELECT A GENRE</h4>
+    </div>
+
+    <!-- list for narrow screen -->
+    <ul class="list-unstyled genre-list narrow-screen" ng-show="isMobileListVisible">
+      <li ng-repeat="genre in genres"
+        ng-click="genreSelected(genre.id)"
+        ng-class="{'selected': genre.id === selectedId}"
+        ui-sref="root.summary({genreId:genre.id})">{{genre.name}}</li>
+    </ul>
+
+    <!-- list for wide screen -->
+    <ul class="list-unstyled genre-list wide-screen">
+      <li ng-repeat="genre in genres"
+        ng-click="genreSelected(genre.id)"
+        ui-sref-active="selected"
+        ui-sref="root.summary({genreId:genre.id})">{{genre.name}}</li>
+    </ul>
+  </div>
+
+</div>

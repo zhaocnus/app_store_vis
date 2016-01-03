@@ -1,0 +1,24 @@
+.main-page-wrapper {
+  min-height: 100%;
+  padding-bottom: $main-footer-height;
+  padding-top: $main-header-height;
+
+  @include breakpoint(sm) {
+    @extend %clearfix;
+    padding-top: 0;
+
+    .left-inner-wrapper {
+      float: left;
+      width: $left-inner-wrapper-width;
+      background-color: $purple;
+    }
+
+    .left-inner-wrapper .menu-container {
+      width: 100%;
+    }
+
+    .right-inner-wrapper {
+      border-left: $left-inner-wrapper-width solid $purple;
+    }
+  }
+}

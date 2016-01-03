@@ -15,9 +15,8 @@
   }
 
   @include breakpoint(sm) {
-    position: absolute;
-    width: $genre-container-width;
     max-height: none;
+    position: static;
 
     .narrow-screen { display: none; }
     .wide-screen { display: block; }
@@ -30,7 +29,7 @@
   $title-line-height: $genre-title-height - 3px;
 
   height: $title-height;
-  padding-left: $spacing-s;
+  padding-left: $spacing-m;
   color: $white;
   background-color: $purple-dark;
 

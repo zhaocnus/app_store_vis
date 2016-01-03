@@ -4,21 +4,17 @@
   function config($stateProvider, $urlRouterProvider, $locationProvider) {
     $urlRouterProvider.otherwise('/');
 
-    // root state
-    /*
     $stateProvider.state('root', {
+      url: '/',
       views: {
-        'header': {
-          templateUrl: 'src/common/header.tpl.html',
-          controller: 'HeaderCtrl'
+        'menu': {
+          templateUrl: 'src/app/menu/menu.tpl.html'
         },
-        'footer': {
-          templateUrl: 'src/common/footer.tpl.html',
-          controller: 'FooterCtrl'
+        'summary': {
+          templateUrl: 'src/app/summary/summary.tpl.html',
         }
       }
     });
-    */
 
     // use the HTML5 History API
     $locationProvider.html5Mode(true);
@@ -30,12 +26,8 @@
     'ngResource',
 
     // app sub-modules
-    // 'common.services.data',
-    // 'common.header',
-    // 'common.footer',
-    // 'home',
     'common.services.data',
-    'core',
+    'menu',
     'summary',
     'templates'
   ])

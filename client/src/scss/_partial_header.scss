@@ -1,9 +1,9 @@
-nav.main-menu {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 50px;
-  width: 100%;
-  background-color: $black;
-  z-index: 999;
+.main-page-wrapper .main-header {
+  height: $main-header-height;
+
+  .header-title {
+    margin: 0;
+    line-height: $main-header-height;
+    vertical-align: middle;
+  }
 }

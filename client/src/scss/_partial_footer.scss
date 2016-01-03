@@ -1,8 +1,12 @@
-// =======================
-// footer .main-footer
-// =======================
 .main-footer {
-  height: 50px;
-  width: 100%;
-  background-color: red;
+  height: $main-footer-height;
+  line-height: $main-footer-height;
+  vertical-align: middle;
+  margin-top: -$main-footer-height;
+
+  p { padding: 0; margin: 0}
+
+  @include breakpoint(sm) {
+    border-left: $left-inner-wrapper-width solid $purple;
+  }
 }
