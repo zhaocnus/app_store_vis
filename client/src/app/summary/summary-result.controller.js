@@ -37,8 +37,7 @@
           if (res.data && res.data.results && res.data.results.length === 1) {
             var result = res.data.results[0];
             group.selectedApp.detail = {
-              artistName: result.artistName,
-              sellerName: result.sellerName
+              artistName: result.artistName
             };
 
             var desc = result.description.replace(/\r?\n|\r/g, ' ');

@@ -140,6 +140,10 @@
     z-index: $app-detail-wrapper;
     padding: $spacing-xl;
     padding-top: $genre-title-height + $spacing-xl;
+
+    a {
+      text-decoration: underline;
+    }
   }
 
   .app-detail-wrapper::before {
@@ -156,6 +160,7 @@
     position: relative;
     background-color: $white;
     overflow-y: auto;
+    overflow-x: hidden;
     min-height: 100%;
     padding: $spacing-m;
     padding-right: $spacing-m + 40px;
