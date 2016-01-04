@@ -17,13 +17,18 @@
 
         <!-- detail of selected app -->
         <div class="app-detail-wrapper" ng-show="group.selectedApp">
-          <h5>
-            <a ng-href="{{group.selectedApp.app_url}}" target="_blank">{{group.selectedApp.name}}</a>
-          </h5>
-          <div ng-show="group.selectedApp.detail">
-            <p class="small">Artist Name : {{group.selectedApp.detail.artistName}}</p>
-            <p class="small">Seller Name : {{group.selectedApp.detail.sellerName}}</p>
-            <p class="small">Description : {{group.selectedApp.detail.desc}}</p>
+          <div class="app-detail-inner-wrapper">
+            <h5>
+              <a ng-href="{{group.selectedApp.app_url}}" target="_blank">{{group.selectedApp.name}}</a>
+            </h5>
+            <div ng-show="group.selectedApp.detail">
+              <p class="small">Artist Name : {{group.selectedApp.detail.artistName}}</p>
+              <p class="small">Seller Name : {{group.selectedApp.detail.sellerName}}</p>
+              <p class="small">Description : {{group.selectedApp.detail.desc}}</p>
+            </div>
+            <h3 class="close-btn" ng-click="unSelectApp(group)">
+              <span class="glyphicon glyphicon-remove"></span>
+            </h3>
           </div>
         </div>
       </div> <!-- left-wrapper -->
