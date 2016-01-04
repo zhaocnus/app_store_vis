@@ -80,7 +80,7 @@
       font-size: 12px;
     }
 
-    &+.bar {
+    &+.bar-wrapper .bar {
       $border-style: 2px $gray-dark solid;
       border-top: $border-style;
       border-right: $border-style;
@@ -131,25 +131,18 @@
   }
 
   @include breakpoint(sm) {
-    $item-info-wrapper-width: 200px;
+    $left-wrapper-width: 200px;
 
-    position: relative;
-    padding-left: $item-info-wrapper-width + $spacing-m;
+    @extend %clearfix;
+    overflow: hidden;
 
-    .item-info-wrapper {
-      width: $item-info-wrapper-width;
-      position: absolute;
-      left: 0;
-      top: 0;
+    .left-wrapper {
+      width: $left-wrapper-width;
+      float: left;
     }
 
-    .app-detail-wrapper {
-      width: $item-info-wrapper-width;
-      position: absolute;
-      left: 0;
-      padding: 0 $spacing-xs;
-      top: $item-height;
+    .right-wrapper {
+      margin-left: $left-wrapper-width + $spacing-m;
     }
-
   }
 }

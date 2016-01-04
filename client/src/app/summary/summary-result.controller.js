@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function summaryResultCtrl($scope, $stateParams, DataService) {
+  function summaryResultCtrl($scope, $stateParams, DataService, ItunesDataService) {
     $scope.genreId = $stateParams.genreId;
 
     DataService.genres.get({genreId: $scope.genreId}, function (res) {
@@ -30,6 +30,21 @@
       // select app to show its detail
       $scope.selectApp = function (app, group) {
         group.selectedApp = app;
+
+        // pull detail info using itunes lookup id
+        ItunesDataService.lookupById(app.id).then(function (res) {
+          if (res.data && res.data.results && res.data.results.length === 1) {
+            var result = res.data.results[0];
+            group.selectedApp.detail = {
+              artistName: result.artistName,
+              sellerName: result.sellerName
+            };
+
+            var desc = result.description.replace(/\r?\n|\r/g, ' ');
+            group.selectedApp.detail.desc = desc.length > 120 ?
+              (desc.substring(0, 120) + '...') : desc;
+          }
+        });
       };
     });
   }
@@ -39,6 +54,7 @@
       '$scope',
       '$stateParams',
       'DataService',
+      'ItunesDataService',
       summaryResultCtrl
     ]);
 })();

@@ -5,42 +5,53 @@
   <!-- summary list -->
   <ol class="summary-list list-unstyled">
     <li class="summary-list-item" ng-repeat="group in groupList | orderBy : curGroupOrder">
-      <!-- group information -->
-      <p class="item-info-wrapper"
-        ng-class="{'is-apps-visible': group.lazyLoadApps}"
-        ng-click="toggleGroupApps(group)">
-        <span class="item-info percent">{{group.percent}}</span>
-        <span class="item-info color">{{group.web_save_color}}</span>
-        <span class="item-info more"></span>
-      </p>
+      <div class="left-wrapper">
+        <!-- group information -->
+        <p class="item-info-wrapper"
+          ng-class="{'is-apps-visible': group.lazyLoadApps}"
+          ng-click="toggleGroupApps(group)">
+          <span class="item-info percent">{{group.percent}}</span>
+          <span class="item-info color">{{group.web_save_color}}</span>
+          <span class="item-info more"></span>
+        </p>
 
-      <!-- percentage bar -->
-      <div class="bar"
-        ng-style="{
-          'width': group.barWidth,
-          'background-color': group.web_save_color
-        }">
-      </div>
+        <!-- detail of selected app -->
+        <div class="app-detail-wrapper" ng-show="group.selectedApp">
+          <h5>
+            <a ng-href="{{group.selectedApp.app_url}}" target="_blank">{{group.selectedApp.name}}</a>
+          </h5>
+          <div ng-show="group.selectedApp.detail">
+            <p class="small">Artist Name : {{group.selectedApp.detail.artistName}}</p>
+            <p class="small">Seller Name : {{group.selectedApp.detail.sellerName}}</p>
+            <p class="small">Description : {{group.selectedApp.detail.desc}}</p>
+          </div>
+        </div>
+      </div> <!-- left-wrapper -->
 
-      <!-- icon list -->
-      <ul class="item-app-list list-unstyled">
-        <li class="item-app"
-          ng-repeat="app in group.lazyLoadApps"
-          ng-style="{
-            'background-image': app.icon_url,
-            'background-color': group.web_save_color
-          }"
-          ng-class="{'selected': group.selectedApp.id === app.id}"
-          ng-click="selectApp(app, group)">
-        </li>
-      </ul>
+      <div class="right-wrapper">
+        <!-- percentage bar -->
+        <div class="bar-wrapper">
+          <div class="bar"
+            ng-style="{
+              'width': group.barWidth,
+              'background-color': group.web_save_color
+            }">
+          </div>
+        </div>
 
-      <!-- detail of selected app -->
-      <div class="app-detail-wrapper" ng-show="group.selectedApp">
-        <h5>
-          <a ng-href="{{group.selectedApp.app_url}}" target="_blank">{{group.selectedApp.name}}</a>
-        </h5>
-      </div>
+        <!-- icon list -->
+        <ul class="item-app-list list-unstyled">
+          <li class="item-app"
+            ng-repeat="app in group.lazyLoadApps"
+            ng-style="{
+              'background-image': app.icon_url,
+              'background-color': group.web_save_color
+            }"
+            ng-class="{'selected': group.selectedApp.id === app.id}"
+            ng-click="selectApp(app, group)">
+          </li>
+        </ul>
+      </div> <!-- righter-wrapper -->
 
     </li>
   </ol>

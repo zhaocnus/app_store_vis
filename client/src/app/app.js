@@ -28,6 +28,7 @@
 
     // app sub-modules
     'common.services.data',
+    'common.services.itunesData',
     'menu',
     'summary',
     'templates'
