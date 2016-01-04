@@ -22,7 +22,7 @@ module.exports.save = function(data, executeQuery) {
 
   // use "ON DUPLICATE KEY UPDATE id=id" to ignore insert if record already exists
   // http://stackoverflow.com/a/4920619/2259286
-  var track_name = getValue('track_name');
+  var track_name = getValue('track_name'),
       artwork_url60 = getValue('artwork_url60'),
       track_view_url = getValue('track_view_url'),
       description = getValue('description'),
