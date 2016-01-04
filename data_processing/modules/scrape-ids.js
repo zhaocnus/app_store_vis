@@ -17,7 +17,7 @@ var conn = require('../database/connection');
 // limit number of apps for each letter,
 // meaning the total number of apps per
 // genre is MAX_NUM_APP_PER_LETTER * 27
-var MAX_NUM_APPS_PER_LETTER = 5;
+var MAX_NUM_APPS_PER_LETTER = 100;
 
 // number of ids in a group for bulk processing
 var ID_GROUP_MAX_NUM = 200;
@@ -219,8 +219,10 @@ module.exports.scrapeAppIds = function(genreLevelUrls, callback) {
   });
 
   // concat all urls
-  //urls = urls.concat(letterLevelUrls);
-  urls = letterLevelUrls;
+  urls = urls.concat(letterLevelUrls);
+
+  // uncomment this if only need to scrape letter pages
+  // urls = letterLevelUrls;
 
   // get all ids in series
   async.eachSeries(urls, function (url, cb) {
@@ -260,8 +262,6 @@ module.exports.getAllGenreUrls = function(cb) {
   requestAsync(homeUrl)
     .then(function (html) {
       var genreLevelUrls = getGenreLevel(html);
-
-      console.log(genreLevelUrls);
 
       cb(null, genreLevelUrls);
     }, function (err) {

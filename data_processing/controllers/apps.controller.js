@@ -16,19 +16,27 @@ module.exports.save = function(data, executeQuery) {
     if (field in data) {
       return conn.escape(data[field]);
     } else {
-      return null;
+      return 'null';
     }
   };
 
-  // use "ON DUPLICATE KEY UPDATE" to ignore insert if record already exists
+  // use "ON DUPLICATE KEY UPDATE id=id" to ignore insert if record already exists
   // http://stackoverflow.com/a/4920619/2259286
+  var track_name = getValue('track_name');
+      artwork_url60 = getValue('artwork_url60'),
+      track_view_url = getValue('track_view_url'),
+      description = getValue('description'),
+      artist_name = getValue('artist_name');
   var query = util.format(
-    'INSERT INTO `apps` (id, track_name, artwork_url60, track_view_url) ' +
-    'VALUES (%d, %s, %s, %s) ON DUPLICATE KEY UPDATE id=id',
+    'INSERT INTO `apps` (id, track_name, artwork_url60, track_view_url, description, artist_name) ' +
+    'VALUES (%d, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE id=id',
     data.id,
-    getValue('track_name'),
-    getValue('artwork_url60'),
-    getValue('track_view_url')
+
+    track_name,
+    artwork_url60,
+    track_view_url,
+    description,
+    artist_name
   );
 
   if (executeQuery) {
@@ -44,7 +52,7 @@ module.exports.save = function(data, executeQuery) {
 module.exports.getRowsWithoutDetails = function(cb) {
   var query =
     'SELECT id FROM `apps` ' +
-    'WHERE artwork_url60 IS NULL';
+    'WHERE artwork_url60 IS NULL OR description IS NULL';
 
   conn.query(query)
     .then(function (data) {
@@ -109,7 +117,9 @@ module.exports.update = function(data, executeQuery) {
       track_view_url = getValue('track_view_url'),
       genre_id = getValue('genre_id'),
       dominant_color = getValue('dominant_color'),
-      web_save_color = getValue('web_save_color');
+      web_save_color = getValue('web_save_color'),
+      description = getValue('description'),
+      artist_name = getValue('artist_name');
 
   var query = util.format(
     'UPDATE `apps` SET ' +
@@ -118,7 +128,9 @@ module.exports.update = function(data, executeQuery) {
     'track_view_url = %s, ' +
     'genre_id = %s, ' +
     'dominant_color = %s, ' +
-    'web_save_color = %s ' +
+    'web_save_color = %s, ' +
+    'description = %s, ' +
+    'artist_name = %s ' +
     'WHERE id = %d',
     track_name,
     artwork_url60,
@@ -126,6 +138,8 @@ module.exports.update = function(data, executeQuery) {
     genre_id.toString(),
     dominant_color,
     web_save_color,
+    description,
+    artist_name,
     parseInt(data.id, 10)
   );
 

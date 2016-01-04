@@ -28,6 +28,8 @@ module.exports.bulkSave = function(appDetailArr) {
       track_name: data.trackName,
       artwork_url60: data.artworkUrl60,
       track_view_url: data.trackViewUrl,
+      description: data.description,
+      artist_name: data.artistName,
       genre_id: genreId
     };
 
