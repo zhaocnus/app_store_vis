@@ -24,15 +24,18 @@
       // toggle group app icons on click
       $scope.toggleGroupApps = function (group) {
         group.lazyLoadApps = group.lazyLoadApps ? null : group.apps;
-        group.selectedApp = null;
+
+        $scope.selectedApp = null;
       };
 
       // select app to show its detail
-      $scope.selectApp = function (app, group) {
-        group.selectedApp = app;
+      $scope.selectApp = function (appId) {
+        $scope.selectedAppId = appId;
+        console.log(appId);
 
         // pull detail info using itunes lookup id
         // TODO: save info in DB. itunes api is kinda slow
+        /*
         ItunesDataService.lookupById(app.id).then(function (res) {
           if (res.data && res.data.results && res.data.results.length === 1) {
             var result = res.data.results[0];
@@ -44,11 +47,13 @@
             group.selectedApp.detail.desc = desc.length > 120 ?
               (desc.substring(0, 120) + '...') : desc;
           }
-        });
+        });*/
       };
 
-      $scope.unSelectApp = function (group) {
-        group.selectedApp = null;
+      $scope.unSelectApp = function (appId) {
+        $scope.selectedAppId = null;
+
+        console.log($scope.selectedAppId, appId);
       };
     });
   }

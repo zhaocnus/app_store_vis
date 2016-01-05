@@ -21,12 +21,16 @@ module.exports.list = function(req, res) {
 // Read genre summary
 module.exports.readGenreSummary = function(req, res) {
   // TODO: save this result in a json or in memory key/value DB
+  // TODO: create a shortened description column
   var query = util.format(
     'SELECT id, track_name AS name, artwork_url60 AS icon_url, ' +
-      'track_view_url AS app_url, web_save_color ' +
+      'track_view_url AS app_url, web_save_color, artist_name AS artist, ' +
+      'description ' +
+      //'CONCAT( LEFT(description, 100), IF(LENGTH(description) > 100, "...", "") ) AS description ' +
     'FROM `apps` ' +
     'WHERE genre_id = %d ' +
-    'AND web_save_color IS NOT NULL',
+    'AND web_save_color IS NOT NULL ' +
+    'GROUP BY artist', // this removes similar icons
     req.genre.id
   );
 

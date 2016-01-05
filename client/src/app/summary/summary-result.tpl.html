@@ -14,22 +14,6 @@
           <span class="item-info color">{{group.web_save_color}}</span>
           <span class="item-info more"></span>
         </p>
-
-        <!-- detail of selected app -->
-        <div class="app-detail-wrapper" ng-show="group.selectedApp">
-          <div class="app-detail-inner-wrapper">
-            <h5>
-              <a ng-href="{{group.selectedApp.app_url}}" target="_blank">{{group.selectedApp.name}}</a>
-            </h5>
-            <div ng-show="group.selectedApp.detail">
-              <p class="small">Artist Name : {{group.selectedApp.detail.artistName}}</p>
-              <p class="small">Description : {{group.selectedApp.detail.desc}}</p>
-            </div>
-            <h3 class="close-btn" ng-click="unSelectApp(group)">
-              <span class="glyphicon glyphicon-remove"></span>
-            </h3>
-          </div>
-        </div>
       </div> <!-- left-wrapper -->
 
       <div class="right-wrapper">
@@ -47,12 +31,29 @@
         <ul class="item-app-list list-unstyled">
           <li class="item-app"
             ng-repeat="app in group.lazyLoadApps"
-            ng-style="{
-              'background-image': app.icon_url,
-              'background-color': group.web_save_color
-            }"
-            ng-class="{'selected': group.selectedApp.id === app.id}"
-            ng-click="selectApp(app, group)">
+            ng-class="{'selected': selectedAppId === app.id}">
+
+            <!-- app icon -->
+            <div class="app-icon"
+              ng-style="{
+                'background-image': app.icon_url,
+                'background-color': group.web_save_color
+              }"
+              ng-click="selectApp(app.id)">
+            </div>
+
+            <!-- app detail -->
+            <div class="app-detail">
+              <div class="app-detail-inner-wrapper">
+                <h5 class="app-detail-text"><a ng-href="{{app.app_url}}" target="_blank">{{app.name}}</a></h5>
+                <p class="app-detail-text small">Artist Name : {{app.artist}}</p>
+                <p class="app-detail-text small">Description : {{app.description}}</p>
+                <h3 class="close-btn" ng-click="unSelectApp(app.id)">
+                  <span class="glyphicon glyphicon-remove"></span>
+                </h3>
+              </div>
+            </div>
+
           </li>
         </ul>
       </div> <!-- righter-wrapper -->
