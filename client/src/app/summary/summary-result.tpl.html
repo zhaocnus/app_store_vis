@@ -40,7 +40,14 @@
                 'background-color': group.web_save_color
               }"
               ng-click="selectApp(app.id)">
+              <h4 class="hover-icon">
+                <span class="glyphicon glyphicon-plus"></span>
+              </h4>
             </div>
+
+            <h4 class="selected-icon" ng-click="unSelectApp()">
+              <span class="glyphicon glyphicon-minus"></span>
+            </h4>
 
             <!-- app detail -->
             <div class="app-detail">
@@ -48,7 +55,7 @@
                 <h5 class="app-detail-text"><a ng-href="{{app.app_url}}" target="_blank">{{app.name}}</a></h5>
                 <p class="app-detail-text small">Artist Name : {{app.artist}}</p>
                 <p class="app-detail-text small">Description : {{app.description}}</p>
-                <h3 class="close-btn" ng-click="unSelectApp(app.id)">
+                <h3 class="close-btn" ng-click="unSelectApp()">
                   <span class="glyphicon glyphicon-remove"></span>
                 </h3>
               </div>
