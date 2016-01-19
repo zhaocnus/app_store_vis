@@ -25,7 +25,7 @@
   }
 
   .item-info-wrapper .item-info.percent {
-    width: 50px;
+    width: 70px;
     border-right: 2px solid $gray-lighter;
   }
 
@@ -50,6 +50,7 @@
   .bar {
     height: $item-height;
     border-radius: 0 $item-height/2 $item-height/2 0;
+    min-width: $item-height/2;
 
     $border-style: 2px $gray-lighter solid;
     border-top: $border-style;

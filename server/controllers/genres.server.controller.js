@@ -60,8 +60,8 @@ module.exports.readGenreSummary = function(req, res) {
       // key is the web_save_color
       dataArr.push({
         len: value.length,
-        percent: Math.round(100 * value.length / total) + '%',
-        barWidth: Math.round(100 * value.length / max) + '%',
+        percent: (Math.round(10000 * value.length / total) / 100) + '%',
+        barWidth: (Math.round(10000 * value.length / max) / 100) + '%',
         apps: value,
         web_save_color: '#' + key
       });
