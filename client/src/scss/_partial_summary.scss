@@ -170,10 +170,6 @@
   $detail-margin-top: 8px;
   $detail-height: 125px;
 
-  // $detail-margin-top: 5px;
-  // $detail-height: 100px;
-  // $overlap-spacing: 10px;
-
   @include breakpoint(sm) {
     @extend %clearfix;
     overflow: hidden;

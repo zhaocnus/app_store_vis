@@ -3,8 +3,11 @@
 
   function summaryResultCtrl($scope, $stateParams, DataService, ItunesDataService) {
     $scope.genreId = $stateParams.genreId;
+    $scope.loadingComplete = false; // show loading screen
 
     DataService.genres.get({genreId: $scope.genreId}, function (res) {
+      $scope.loadingComplete = true; // hide loading screen
+
       // genre info
       $scope.genreName = res.genre.name;
       $scope.totalNumApps = res.total;
@@ -31,12 +34,12 @@
       // select app to show its detail
       $scope.selectApp = function (appId) {
         $scope.selectedAppId = appId;
-        console.log(appId);
+      };
 
+      /*
+      $scope.loadMore = function () {
         // pull detail info using itunes lookup id
-        // TODO: save info in DB. itunes api is kinda slow
-        /*
-        ItunesDataService.lookupById(app.id).then(function (res) {
+        ItunesDataService.lookupById($scope.selectedAppId).then(function (res) {
           if (res.data && res.data.results && res.data.results.length === 1) {
             var result = res.data.results[0];
             group.selectedApp.detail = {
@@ -47,13 +50,12 @@
             group.selectedApp.detail.desc = desc.length > 120 ?
               (desc.substring(0, 120) + '...') : desc;
           }
-        });*/
+        });
       };
+      */
 
       $scope.unSelectApp = function (appId) {
         $scope.selectedAppId = null;
-
-        console.log($scope.selectedAppId, appId);
       };
     });
   }
