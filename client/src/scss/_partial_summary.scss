@@ -1,7 +1,20 @@
+.summary-container .summary-list {
+  overflow-x: hidden; // avoid horizontal scrollbar during transition animation
+}
+
 .summary-container .summary-list .summary-list-item {
   $item-height: 40px;
   min-height: $item-height;
   margin-top: $spacing-xl;
+
+  // mn-animate
+  &.ng-enter {
+    transition: width 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    width: 0;
+  }
+  &.ng-enter-active {
+    width: 100%;
+  }
 
   // item-info-wrapper
   .item-info-wrapper {
@@ -47,7 +60,7 @@
   }
 
   // bar
-  .bar {
+  .bar-wrapper .bar {
     height: $item-height;
     border-radius: 0 $item-height/2 $item-height/2 0;
     min-width: $item-height/2;
@@ -56,6 +69,7 @@
     border-top: $border-style;
     border-right: $border-style;
     border-bottom: $border-style;
+    width: 0;
   }
 
   // hover state
@@ -71,13 +85,6 @@
     .item-info.more::before {
       content: "CLICK TO SEE APP ICONS";
       font-size: 12px;
-    }
-
-    &+.bar-wrapper .bar {
-      $border-style: 2px $gray-dark solid;
-      border-top: $border-style;
-      border-right: $border-style;
-      border-bottom: $border-style;
     }
   }
 
@@ -104,6 +111,15 @@
     margin-bottom: $spacing-m;
     cursor: pointer;
     vertical-align: top;
+
+    // ng-animate
+    &.ng-enter {
+      transition: 0.3s linear opacity;
+      opacity: 0;
+    }
+    &.ng-enter-active {
+      opacity: 1;
+    }
   }
 
   .item-app-list .item-app .app-icon {

@@ -25,6 +25,7 @@
     // vendor modules
     'ui.router',
     'ngResource',
+    'ngAnimate',
 
     // app sub-modules
     'common.services.data',
