@@ -13,11 +13,12 @@ var requestAsync = require('./request-async');
 var pconsole = require('./p-console');
 var appsController = require('../controllers/apps.controller');
 var conn = require('../database/connection');
+var config = require('../config');
 
 // limit number of apps for each letter,
 // meaning the total number of apps per
 // genre is MAX_NUM_APP_PER_LETTER * 27
-var MAX_NUM_APPS_PER_LETTER = 100;
+var MAX_NUM_APPS_PER_LETTER = config.maxNumAppsPerGenre;
 
 // number of ids in a group for bulk processing
 var ID_GROUP_MAX_NUM = 200;
