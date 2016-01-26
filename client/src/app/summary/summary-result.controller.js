@@ -2,9 +2,37 @@
   'use strict';
 
   function summaryResultCtrl($scope, $stateParams, DataService, ItunesDataService) {
+    // default values
     $scope.genreId = $stateParams.genreId;
     $scope.loadingComplete = false; // show loading screen
 
+    // toggle group app icons on click
+    $scope.toggleGroupApps = function (group) {
+      group.lazyLoadApps = group.lazyLoadApps ? null : group.apps;
+
+      $scope.selectedApp = null;
+    };
+
+    // select app to show its detail
+    $scope.selectApp = function (app) {
+      var appId = app.id;
+
+      $scope.selectedAppId = appId;
+
+      DataService.apps.get({appId: appId}, function (res) {
+        app.description = res.description;
+        app.name = res.track_name;
+        app.app_url = res.track_view_url;
+      }, function (err) {
+        $scope.err = err;
+      });
+    };
+
+    $scope.unSelectApp = function () {
+      $scope.selectedAppId = null;
+    };
+
+    // load genre data
     DataService.genres.get({genreId: $scope.genreId}, function (res) {
       $scope.loadingComplete = true; // hide loading screen
 
@@ -23,40 +51,8 @@
 
       // set default order
       $scope.curGroupOrder = '-len';
-
-      // toggle group app icons on click
-      $scope.toggleGroupApps = function (group) {
-        group.lazyLoadApps = group.lazyLoadApps ? null : group.apps;
-
-        $scope.selectedApp = null;
-      };
-
-      // select app to show its detail
-      $scope.selectApp = function (appId) {
-        $scope.selectedAppId = appId;
-      };
-
-      /*
-      $scope.loadMore = function () {
-        // pull detail info using itunes lookup id
-        ItunesDataService.lookupById($scope.selectedAppId).then(function (res) {
-          if (res.data && res.data.results && res.data.results.length === 1) {
-            var result = res.data.results[0];
-            group.selectedApp.detail = {
-              artistName: result.artistName
-            };
-
-            var desc = result.description.replace(/\r?\n|\r/g, ' ');
-            group.selectedApp.detail.desc = desc.length > 120 ?
-              (desc.substring(0, 120) + '...') : desc;
-          }
-        });
-      };
-      */
-
-      $scope.unSelectApp = function (appId) {
-        $scope.selectedAppId = null;
-      };
+    }, function (err) {
+      $scope.err = err;
     });
   }
 

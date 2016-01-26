@@ -3,7 +3,8 @@
 
   function dataService($resource) {
     return {
-      genres: $resource('/api/genres/:genreId')
+      genres: $resource('/api/genres/:genreId'),
+      apps: $resource('/api/apps/:appId')
     };
   }
 
