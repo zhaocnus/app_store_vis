@@ -24,6 +24,7 @@ function init() {
     }
 
     pconsole.header('All done!!!');
+    process.exit(0);
   });
 }
 

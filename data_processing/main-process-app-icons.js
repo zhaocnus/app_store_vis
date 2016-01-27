@@ -21,7 +21,7 @@ var DELAY = 2000;
  * Process all rows
  **/
 function processRowGroup(group, callback) {
-  pconsole.log('Processing group ' + group.id);
+  pconsole.inline('Processing group ' + group.id, true);
 
   var queries = [];
 
@@ -78,8 +78,7 @@ function processAll(rows, callback) {
         if (err) throw err;
 
         conn.execTransaction(queries).then(function () {
-          pconsole.log('Done', true);
-          pconsole.newLine();
+          pconsole.inline(' ... Done');
 
           setTimeout(function () {
             cb();
