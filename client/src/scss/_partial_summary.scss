@@ -3,9 +3,9 @@
 }
 
 .summary-container .summary-list .summary-list-item {
-  $item-height: 40px;
+  $item-height: 30px;
   min-height: $item-height;
-  margin-top: $spacing-xl;
+  margin-top: $spacing-xs;
 
   // mn-animate
   &.ng-enter {
@@ -96,7 +96,7 @@
 }
 
 .summary-container .summary-list .summary-list-item {
-  $item-height: 40px;
+  $item-height: 36px;
 
   // item-app-list
   .item-app-list {
@@ -163,13 +163,13 @@
     overflow-x: hidden;
     min-height: 100%;
     padding: $spacing-m;
-    padding-right: $spacing-m + 40px;
+    padding-right: $spacing-m + $item-height;
     border-radius: $border-radius;
   }
 
   .item-app-list .item-app .app-detail-inner-wrapper .close-btn {
-    width: 40px;
-    height: 40px;
+    width: $item-height;
+    height: $item-height;
     position: absolute;
     top: $spacing-m;
     right: $spacing-m;
@@ -177,13 +177,13 @@
     padding: 0;
     text-align: center;
     vertical-align: middle;
-    line-height: 40px;
+    line-height: $item-height;
   }
 }
 
 .summary-container .summary-list .summary-list-item {
   $left-wrapper-width: 200px;
-  $item-height: 40px;
+  $item-height: 30px;
   $detail-margin-top: 8px;
   $detail-height: 125px;
 

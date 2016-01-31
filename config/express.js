@@ -4,6 +4,7 @@ var path = require('path');
 var express = require('express');
 var bodyParser = require('body-parser');
 var compress = require('compression');
+var morgan = require('morgan');
 
 var config = require('./config');
 
@@ -34,6 +35,10 @@ module.exports.init = function () {
       buildPath = path.resolve(__dirname, '../build');
   app.use(express.static(clientPath));
   app.use(express.static(buildPath));
+
+  //if (process.NODE_ENV === 'development') {
+    app.use(morgan('tiny'));
+  //}
 
   // Globbing routing files
   config.getGlobbedFiles('./server/routes/**/*.js').forEach(function(routePath) {
