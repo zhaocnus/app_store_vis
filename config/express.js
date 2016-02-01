@@ -36,9 +36,10 @@ module.exports.init = function () {
   app.use(express.static(clientPath));
   app.use(express.static(buildPath));
 
-  //if (process.NODE_ENV === 'development') {
+  // logger
+  if (process.NODE_ENV !== 'production') {
     app.use(morgan('tiny'));
-  //}
+  }
 
   // Globbing routing files
   config.getGlobbedFiles('./server/routes/**/*.js').forEach(function(routePath) {

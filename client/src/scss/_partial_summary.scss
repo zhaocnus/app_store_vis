@@ -27,13 +27,15 @@
     white-space: nowrap;
     position: relative;
     cursor: pointer;
+    border-radius: $item-height;
+    overflow: hidden;
 
     margin-bottom: $spacing-s;
   }
 
   .item-info-wrapper .item-info {
     display: inline-block;
-    padding-left: $spacing-s;
+    padding-left: $spacing-m;
     height: $item-height;
   }
 
@@ -43,13 +45,14 @@
   }
 
   .item-info-wrapper .item-info.more {
-    width: $item-height + $spacing-xs;
+    width: $item-height + $spacing-s;
     border-left: $spacing-xs solid $white;
     position: absolute;
     top: 0;
     right: 0;
-    text-align: center;
-    padding: 0;
+    padding: 0 0 0 8px;
+    vertical-align: middle;
+    line-height: $item-height;
   }
   .item-info-wrapper .item-info.more::before {
     content: "+";
@@ -62,13 +65,9 @@
   // bar
   .bar-wrapper .bar {
     height: $item-height;
-    border-radius: 0 $item-height/2 $item-height/2 0;
-    min-width: $item-height/2;
-
-    $border-style: 2px $gray-lighter solid;
-    border-top: $border-style;
-    border-right: $border-style;
-    border-bottom: $border-style;
+    border-radius: $item-height/2;
+    min-width: $item-height;
+    border: 2px $gray-lighter solid;
     width: 0;
   }
 
@@ -80,6 +79,8 @@
       width: 100%;
       background-color: $gray-dark;
       border: none;
+      text-align: center;
+      padding: 0;
     }
 
     .item-info.more::before {
@@ -181,9 +182,10 @@
   }
 }
 
+// media query
 .summary-container .summary-list .summary-list-item {
   $left-wrapper-width: 200px;
-  $item-height: 30px;
+  $item-height: 36px;
   $detail-margin-top: 8px;
   $detail-height: 125px;
 
