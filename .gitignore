@@ -10,3 +10,4 @@ app/tests/coverage/
 tmp
 dump/*.sql
 dump/*.zip
+build/dist

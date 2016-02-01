@@ -5,23 +5,22 @@
 var config = require('./build/build.config.js');
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
+var usemin = require('gulp-usemin');
 var runSequence = require('run-sequence');
 var del = require('del');
 
 // optimize images and put them in the dist folder
-/*
 gulp.task('images', function() {
   return gulp.src(config.images)
     .pipe($.imagemin({
       progressive: true,
-      interlaced: tru
+      interlaced: true
     }))
     .pipe(gulp.dest(config.dist + '/assets/images'))
     .pipe($.size({
       title: 'images'
     }));
 });
-*/
 
 //build files for development
 gulp.task('build', ['clean:tmp'], function(cb) {
@@ -69,60 +68,33 @@ gulp.task('build:dist', ['clean:dist', 'clean:tmp'], function(cb) {
       'copy',
       'images'
     ],
-    //'html',
+    'usemin',
     cb);
 });
 
 // generate a minified css files, 2 js file, change
 // their name to be unique, and generate sourcemaps
-// gulp.task('html', function() {
-//   var assets = $.useref.assets({
-//     searchPath: '{build,client}'
-//   });
-
-//   return gulp.src(config.index)
-//     .pipe(assets)
-//     .pipe($.sourcemaps.init())
-//     .pipe($.if('**/*main.js', $.ngAnnotate()))
-//     .pipe($.if('*.js', $.uglify({
-//       mangle: false,
-//     })))
-//     .pipe($.if('*.css', $.csso()))
-//     .pipe($.if(['**/*main.js', '**/*main.css'], $.header(config.banner, {
-//       pkg: pkg
-//     })))
-//     .pipe($.rev())
-//     .pipe(assets.restore())
-//     .pipe($.useref())
-//     .pipe($.revReplace())
-//     .pipe($.if('*.html', $.minifyHtml({
-//       empty: true
-//     })))
-//     .pipe($.sourcemaps.write())
-//     .pipe(gulp.dest(config.dist))
-//     .pipe($.size({
-//       title: 'html'
-//     }));
-// });
+gulp.task('usemin', function() {
+  return gulp.src(config.index)
+    .pipe(usemin({
+      css: [ $.cssnano, $.rev ],
+      js: [ $.ngAnnotate, $.uglify({mangle: false}), $.rev ]
+    }))
+    .pipe(gulp.dest(config.dist))
+    .pipe($.size({ title: 'usemin' }));
+});
 
 //copy assets in dist folder
-/*
 gulp.task('copy', function() {
   return gulp.src([
-      config.base + '/*',
-      '!' + config.base + '/json',
-      '!' + config.base + '/projects',
-      '!' + config.base + '/additional',
-      '!' + config.base + '/*.html',
-      '!' + config.base + '/src',
-      '!' + config.base + '/test'
+      config.base + '/*.ico',
+      config.base + '/*.png'
     ])
     .pipe(gulp.dest(config.dist))
     .pipe($.size({
       title: 'copy'
     }));
 });
-*/
 
 gulp.task('nodemon', function (done) {
   $.nodemon({

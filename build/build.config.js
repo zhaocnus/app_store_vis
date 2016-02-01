@@ -2,7 +2,7 @@
 
 //basic configuration object used by gulp tasks
 module.exports = {
-  tmp: 'build/tmp',
+  tmp: 'client/tmp',
   dist: 'build/dist',
   base: 'client',
   tpl: 'client/src/**/*.tpl.html',
