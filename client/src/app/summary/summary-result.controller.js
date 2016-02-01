@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function summaryResultCtrl($scope, $stateParams, DataService, ItunesDataService) {
+  function summaryResultCtrl($scope, $stateParams, DataService) {
     // default values
     $scope.genreId = $stateParams.genreId;
     $scope.loadingComplete = false; // show loading screen
@@ -61,7 +61,6 @@
       '$scope',
       '$stateParams',
       'DataService',
-      'ItunesDataService',
       summaryResultCtrl
     ]);
 })();

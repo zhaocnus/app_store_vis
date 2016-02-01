@@ -6,6 +6,7 @@
 var util = require('util');
 var conn = require('../../data_processing/database/connection');
 var _ = require('lodash');
+var genereSummary = require('../../data_views/genre_summary.json');
 
 // List all genres
 module.exports.list = function(req, res) {
@@ -20,57 +21,16 @@ module.exports.list = function(req, res) {
 
 // Read genre summary
 module.exports.readGenreSummary = function(req, res) {
-  // TODO: save this result in a json or in memory key/value DB (LokiJS)
-  var query = util.format(
-    'SELECT id, artwork_url60 AS icon_url, web_save_color, artist_name AS artist ' +
-    'FROM `apps` ' +
-    'WHERE genre_id = %d ' +
-    'AND web_save_color IS NOT NULL ' +
-    'GROUP BY artist', // this removes similar icons
-    req.genre.id
-  );
+  var result = genereSummary[req.genre.id.toString()];
 
-  conn.query(query).then(function (rows) {
-    // Use js object to group rows by web_save_color
-    var dataObj = {};
-    var max = 1;
-    var total = rows.length;
-    rows.forEach(function (row) {
-      var color = row.web_save_color;
-      if (dataObj.hasOwnProperty(color)) {
-        dataObj[color].push(row);
-      } else {
-        dataObj[color] = [row];
-      }
+  if (!result) {
+    return res.status(404).send('No genre with that ID has been found.');
+  }
 
-      var len = dataObj[color].length;
-      if (len > max) {
-        max = len;
-      }
-    });
-
-    // convert group object to array
-    var dataArr = [];
-    _.forOwn(dataObj, function(value, key) {
-      // value is an array containing all the icons
-      // key is the web_save_color
-      dataArr.push({
-        len: value.length,
-        percent: (Math.round(10000 * value.length / total) / 100) + '%',
-        barWidth: (Math.round(10000 * value.length / max) / 100) + '%',
-        apps: value,
-        web_save_color: '#' + key
-      });
-    });
-
-    // respond to client
-    res.status(200).send({
-      genre: req.genre,
-      groups: dataArr,
-      total: total
-    });
-  }, function () {
-    res.status(404).send('No genre with that ID has been found.');
+  res.status(200).send({
+    genre: req.genre,
+    groups: result.groups,
+    total: result.totalNumAppsInGroup
   });
 };
 
