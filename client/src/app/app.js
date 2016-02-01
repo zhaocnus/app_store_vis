@@ -49,7 +49,7 @@
         $document[0].body.scrollTop = $document[0].documentElement.scrollTop = 0;
       });
     }
-  ])
+  ]);
 
   angular.element(document).ready(function() {
     angular.bootstrap(document, ['app']);

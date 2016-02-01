@@ -10,7 +10,7 @@ module.exports = {
   scss: 'client/src/scss/**/*.scss',
   jshint: [
     'build/build.config.js',
-    //'client/src/**/*.js',
+    'client/src/**/*.js',
     '!client/bower_components/**/*.js',
     'client/test/unit/**/*.js',
     'client/test/e2e/**/*.js',

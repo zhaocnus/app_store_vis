@@ -1,8 +1,11 @@
 'use strict';
 
+var path = require('path');
+
 module.exports = {
   server: {
-    port: 3000
+    port: 3000,
+    root: path.resolve(__dirname, '../../')
   },
   db: {
     host : 'localhost',
@@ -10,13 +13,5 @@ module.exports = {
     user : 'root',
     password : 'root',
     connectionLimit : 10
-  },
-
-  // TODO: remove
-  icon: {
-    tmpPath: './tmp/icons',
-    distPath: './public/icons',
-    spriteTileX: 40,
-    spriteTileY: 40
   }
 };

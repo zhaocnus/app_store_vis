@@ -30,7 +30,9 @@ gulp.task('build', ['clean:tmp'], function(cb) {
 
 gulp.task('clean:tmp', del.bind(null, [config.tmp]));
 
-//generate angular templates using html2js
+gulp.task('clean:dist', del.bind(null, [config.dist]));
+
+// generate angular templates using html2js
 gulp.task('templates', function() {
   return gulp.src(config.tpl)
     .pipe($.html2js({
@@ -45,7 +47,7 @@ gulp.task('templates', function() {
     }));
 });
 
-//generate css files from scss sources
+// generate css files from scss sources
 gulp.task('sass', function() {
   return gulp.src([
       config.mainScss
@@ -58,23 +60,18 @@ gulp.task('sass', function() {
     }));
 });
 
-//build files for creating a dist release
-// gulp.task('build:dist', ['clean'], function(cb) {
-//   runSequence(
-//     'jshint',
-//     [
-//       'build',
-//       'copy',
-//       'images'
-//     ],
-//     'html',
-//     cb);
-// });
-
-//build files for development
-// gulp.task('build', ['clean:tmp'], function(cb) {
-//   runSequence(['createGlobals', 'sass', 'templates'], cb);
-// });
+// build files for creating a dist release
+gulp.task('build:dist', ['clean:dist', 'clean:tmp'], function(cb) {
+  runSequence(
+    'jshint',
+    [
+      'build',
+      'copy',
+      'images'
+    ],
+    //'html',
+    cb);
+});
 
 // generate a minified css files, 2 js file, change
 // their name to be unique, and generate sourcemaps

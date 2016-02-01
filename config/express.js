@@ -5,6 +5,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var compress = require('compression');
 var morgan = require('morgan');
+var favicon = require('serve-favicon');
 
 var config = require('./config');
 
@@ -22,6 +23,11 @@ module.exports.init = function () {
     },
     level: 9
   }));
+
+  // TODO(favicon doesn't work)
+  app.use(
+    favicon(path.join(config.server.root, 'client', 'favicon.ico'))
+  );
 
   // Showing stack errors
   app.set('showStackError', true);
