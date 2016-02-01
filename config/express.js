@@ -37,11 +37,18 @@ module.exports.init = function () {
   }));
   app.use(bodyParser.json());
 
-  var clientPath = path.resolve(__dirname, '../client');
-  app.use(express.static(clientPath));
+  if (process.env.NODE_ENV === 'production') {
+    // static
+    app.use(express.static(
+      path.join(config.server.root, 'build', 'dist')
+    ));
+  } else {
+    // static
+    app.use(express.static(
+      path.join(config.server.root, 'client')
+    ));
 
-  // logger
-  if (process.NODE_ENV !== 'production') {
+    // logger
     app.use(morgan('tiny'));
   }
 
@@ -52,8 +59,8 @@ module.exports.init = function () {
 
   // serve single page app index.html
   var indexFile = process.env.NODE_ENV === 'development' ?
-      path.join(clientPath, 'index.html') :
-      path.join(buildPath, 'dist', 'index.html');
+      path.join(config.server.root, 'client', 'index.html') :
+      path.join(config.server.root, 'build', 'dist', 'index.html');
   app.use(function (req, res) {
     res.sendFile(indexFile);
   });
