@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "exec_mode": "fork_mode",
+      "script": "server.js",
+      "name": "app-store-vis",
+      "node_args": [ "--harmony" ],
+      "env": {
+        "PORT": 8000,
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}

@@ -77,7 +77,7 @@ gulp.task('build:dist', ['clean:dist', 'clean:tmp'], function(cb) {
 gulp.task('usemin', function() {
   return gulp.src(config.index)
     .pipe(usemin({
-      css: [ $.cssnano, $.rev ],
+      css: [ $.autoprefixer, $.cssnano, $.rev ],
       js: [ $.ngAnnotate, $.uglify({mangle: false}), $.rev ]
     }))
     .pipe(gulp.dest(config.dist))
