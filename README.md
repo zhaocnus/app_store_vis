@@ -2,7 +2,7 @@
 
 [DEMO]()
 
-# Scrape app data.
+## Scrape app data.
 
 Inspired by [this python script](http://blog.singhanuvrat.com/tech/crawl-itunes-appstore-to-get-list-of-all-apps).
 
@@ -14,26 +14,26 @@ bash scrape.sh
 2. Use [itunes search api](https://www.apple.com/itunes/affiliates/resources/documentation/itunes-store-web-service-search-api.html) to get the app details, including icon url, and save to MySQL db.
 3. Analyze and group icons by colors using ImageMagick.
 
-# Serve demo app
+## Serve demo app
 
 The demo app is using Angular 1, MySQL, Express. 
 
-## Serve in dev mode
+* Serve in dev mode
 ```bash
 gulp serve
 ```
 
-## Create minified distrubution for production 
+* Create minified distrubution for production 
 ```bash
 gulp build:dist
 ```
 
-## Serve in prod mode
+* Serve in prod mode
 ```bash
 pm2 startOrRestart pm2-prod.json
 ```
 
-# Todos
+## Todos
 - [ ] Create better way to group icon colors. Currently it is only using ImageMagick's scale command to get the dominant color.
 
 
